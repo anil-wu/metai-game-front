@@ -17,10 +17,12 @@ export interface IElementState {
   fontSize?: number; // For text
   fontFamily?: string; // For text
   textColor?: string; // For text
+  stroke?: string;
   strokeWidth?: number;
   strokeStyle?: 'solid' | 'dashed' | 'dotted';
   cornerRadius?: number;
   sides?: number; // For polygon sides
+  starInnerRadius?: number; // For star inner radius percentage (0-100)
 }
 
 export abstract class BaseElement {
@@ -79,6 +81,7 @@ export class ShapeElement extends BaseElement {
   strokeStyle?: 'solid' | 'dashed' | 'dotted';
   cornerRadius?: number;
   sides?: number;
+  starInnerRadius?: number;
 
   constructor(state: IElementState) {
     super(state);
@@ -88,6 +91,7 @@ export class ShapeElement extends BaseElement {
     this.strokeStyle = state.strokeStyle;
     this.cornerRadius = state.cornerRadius;
     this.sides = state.sides;
+    this.starInnerRadius = state.starInnerRadius;
   }
 
   clone(): ShapeElement {
@@ -103,6 +107,7 @@ export class ShapeElement extends BaseElement {
       strokeStyle: this.strokeStyle,
       cornerRadius: this.cornerRadius,
       sides: this.sides,
+      starInnerRadius: this.starInnerRadius,
     };
   }
 }
@@ -240,6 +245,6 @@ export class ElementFactory {
     if (type === 'triangle') color = '#10b981';
     if (type === 'star') color = '#f59e0b';
 
-    return new ShapeElement({ ...baseState, color });
+    return new ShapeElement({ ...baseState, color, sides: type === 'star' ? 5 : (type === 'triangle' ? 3 : undefined), starInnerRadius: type === 'star' ? 50 : undefined });
   }
 }

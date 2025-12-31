@@ -345,6 +345,7 @@ export default function EditorStage({
                 strokeStyle={(el as ShapeElementModel).strokeStyle}
                 cornerRadius={(el as ShapeElementModel).cornerRadius}
                 sides={(el as ShapeElementModel).sides}
+                starInnerRadius={(el as ShapeElementModel).starInnerRadius}
               />
             );
           }

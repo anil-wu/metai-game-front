@@ -189,16 +189,19 @@ const StrokePanel = ({
 const CornerPanel = ({ 
   cornerRadius, 
   sides,
+  starInnerRadius,
   onUpdate, 
   onClose 
 }: { 
   cornerRadius: number, 
   sides?: number,
+  starInnerRadius?: number,
   onUpdate: (updates: any) => void, 
   onClose: () => void 
 }) => {
   const [value, setValue] = useState(cornerRadius);
   const [sidesValue, setSidesValue] = useState(sides || 3);
+  const [innerRadiusValue, setInnerRadiusValue] = useState(starInnerRadius !== undefined ? starInnerRadius : 50);
 
   useEffect(() => {
     setValue(cornerRadius);
@@ -210,6 +213,12 @@ const CornerPanel = ({
     }
   }, [sides]);
 
+  useEffect(() => {
+    if (starInnerRadius !== undefined) {
+      setInnerRadiusValue(starInnerRadius);
+    }
+  }, [starInnerRadius]);
+
   const handleChange = (newValue: number) => {
     setValue(newValue);
     onUpdate({ cornerRadius: newValue });
@@ -218,6 +227,11 @@ const CornerPanel = ({
   const handleSidesChange = (newValue: number) => {
     setSidesValue(newValue);
     onUpdate({ sides: newValue });
+  };
+
+  const handleInnerRadiusChange = (newValue: number) => {
+    setInnerRadiusValue(newValue);
+    onUpdate({ starInnerRadius: newValue });
   };
 
   return (
@@ -235,7 +249,7 @@ const CornerPanel = ({
 
       {/* Corner Radius Slider */}
       <div className="flex items-center gap-3 mb-4">
-        <span className="text-sm text-gray-500 whitespace-nowrap w-8">圆角</span>
+        <span className="text-sm text-gray-500 whitespace-nowrap w-16">圆角</span>
         <input 
           type="range" 
           min="0" 
@@ -258,8 +272,8 @@ const CornerPanel = ({
 
       {/* Sides Slider - Only show if sides prop is provided */}
       {sides !== undefined && (
-        <div className="flex items-center gap-3">
-          <span className="text-sm text-gray-500 whitespace-nowrap w-8">顶点</span>
+        <div className="flex items-center gap-3 mb-4">
+          <span className="text-sm text-gray-500 whitespace-nowrap w-16">顶点</span>
           <input 
             type="range" 
             min="3" 
@@ -277,6 +291,32 @@ const CornerPanel = ({
                min="3"
                max="60"
              />
+          </div>
+        </div>
+      )}
+
+      {/* Inner Radius Slider */}
+      {starInnerRadius !== undefined && (
+        <div className="flex items-center gap-3">
+          <span className="text-sm text-gray-500 whitespace-nowrap w-16">内角半径</span>
+          <input 
+            type="range" 
+            min="0" 
+            max="100" 
+            value={innerRadiusValue} 
+            onChange={(e) => handleInnerRadiusChange(parseInt(e.target.value) || 0)}
+            className="flex-1 h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+          />
+          <div className="w-16 flex items-center bg-gray-50 border border-gray-200 rounded-md px-1 h-8">
+             <input 
+               type="number" 
+               value={innerRadiusValue}
+               onChange={(e) => handleInnerRadiusChange(parseInt(e.target.value) || 0)}
+               className="w-full bg-transparent outline-none text-sm text-center"
+               min="0"
+               max="100"
+             />
+             <span className="text-xs text-gray-400 mr-1">%</span>
           </div>
         </div>
       )}
@@ -300,7 +340,8 @@ export default function ShapeToolbar({ element, onUpdate, onDownload }: ShapeToo
   const height = Math.round(el.height);
   const strokeWidth = el.strokeWidth || 2;
   const cornerRadius = el.cornerRadius || 0;
-  const sides = el.type === 'triangle' ? (el.sides || 3) : undefined;
+  const sides = el.type === 'triangle' ? (el.sides || 3) : (el.type === 'star' ? (el.sides || 5) : undefined);
+  const starInnerRadius = el.type === 'star' ? (el.starInnerRadius !== undefined ? el.starInnerRadius : 50) : undefined;
 
   return (
     <div className="flex items-center gap-3 bg-white px-3 py-2 rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100 whitespace-nowrap relative">
@@ -365,6 +406,7 @@ export default function ShapeToolbar({ element, onUpdate, onDownload }: ShapeToo
             <CornerPanel 
                 cornerRadius={cornerRadius}
                 sides={sides}
+                starInnerRadius={starInnerRadius}
                 onUpdate={onUpdate}
                 onClose={() => setShowCornerPanel(false)}
             />

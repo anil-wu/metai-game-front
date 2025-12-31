@@ -3,8 +3,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import ToolsPanel, { ToolType } from './ToolsPanel';
-import ImageToolbar from './ImageToolbar';
-import ShapeToolbar from './ShapeToolbar';
+import ImageToolbar from './toolbars/ImageToolbar';
+import ShapeToolbar from './toolbars/ShapeToolbar';
 import { ZoomIn, ZoomOut } from 'lucide-react';
 import { BaseElement } from '../../models/BaseElement';
 

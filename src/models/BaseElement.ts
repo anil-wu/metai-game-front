@@ -161,7 +161,7 @@ export class TextElement extends BaseElement {
   }
 }
 
-export class ShapeTextElement extends ShapeElement {
+export class TextShapeElement extends ShapeElement {
   text: string;
   fontSize: number;
   fontFamily: string;
@@ -175,8 +175,8 @@ export class ShapeTextElement extends ShapeElement {
     this.textColor = state.textColor || '#ffffff';
   }
 
-  clone(): ShapeTextElement {
-    return new ShapeTextElement(this.toState());
+  clone(): TextShapeElement {
+    return new TextShapeElement(this.toState());
   }
 
   toState(): IElementState {
@@ -197,7 +197,7 @@ export class ElementFactory {
     } else if (state.type === 'text') {
       return new TextElement(state);
     } else if (['message-square', 'arrow-left', 'arrow-right', 'rectangle-text', 'circle-text'].includes(state.type)) {
-       return new ShapeTextElement(state);
+       return new TextShapeElement(state);
     }
     return new ShapeElement(state);
   }
@@ -231,7 +231,7 @@ export class ElementFactory {
     }
 
     if (['message-square', 'arrow-left', 'arrow-right', 'rectangle-text', 'circle-text'].includes(type)) {
-       return new ShapeTextElement({
+       return new TextShapeElement({
          ...baseState,
          color: '#8b5cf6',
          text: 'Label',

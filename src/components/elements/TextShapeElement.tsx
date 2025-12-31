@@ -4,7 +4,7 @@ import { Html } from 'react-konva-utils';
 import { BaseElement, BaseElementProps } from './BaseElement';
 import { ToolType } from '../ToolsPanel';
 
-export interface ShapeTextElementProps extends BaseElementProps {
+export interface TextShapeElementProps extends BaseElementProps {
   color?: string;
   stroke?: string;
   strokeWidth?: number;
@@ -17,7 +17,7 @@ export interface ShapeTextElementProps extends BaseElementProps {
   children?: React.ReactNode;
 }
 
-export default function ShapeTextElement(props: ShapeTextElementProps) {
+export default function TextShapeElement(props: TextShapeElementProps) {
   const { 
     width, 
     height, 

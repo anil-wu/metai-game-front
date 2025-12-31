@@ -1,8 +1,8 @@
 import React from 'react';
 import { Path } from 'react-konva';
-import ShapeTextElement, { ShapeTextElementProps } from './ShapeTextElement';
+import TextShapeElement, { TextShapeElementProps } from './TextShapeElement';
 
-export default function ArrowLeftTextElement(props: ShapeTextElementProps) {
+export default function TextArrowLeftElement(props: TextShapeElementProps) {
     const { width, height, color = '#3b82f6', stroke, strokeWidth, strokeStyle } = props;
     
     const dash = strokeStyle === 'dashed' ? [10, 5] : (strokeStyle === 'dotted' ? [2, 2] : undefined);
@@ -30,7 +30,7 @@ export default function ArrowLeftTextElement(props: ShapeTextElementProps) {
     `;
 
   return (
-    <ShapeTextElement {...props}>
+    <TextShapeElement {...props}>
        <Path
          data={pathData}
          fill={color}
@@ -40,6 +40,6 @@ export default function ArrowLeftTextElement(props: ShapeTextElementProps) {
          lineJoin="round"
          lineCap="round"
        />
-    </ShapeTextElement>
+    </TextShapeElement>
   );
 }

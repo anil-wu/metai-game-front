@@ -5,11 +5,11 @@ import { Stage, Layer, Transformer } from 'react-konva';
 import ImageElement from './elements/ImageElement';
 import ShapeElement from './elements/ShapeElement';
 import TextElement from './elements/TextElement';
-import RectangleTextElement from './elements/RectangleTextElement';
-import CircleTextElement from './elements/CircleTextElement';
-import MessageSquareTextElement from './elements/MessageSquareTextElement';
-import ArrowLeftTextElement from './elements/ArrowLeftTextElement';
-import ArrowRightTextElement from './elements/ArrowRightTextElement';
+import TextRectangleElement from './elements/TextRectangleElement';
+import TextCircleElement from './elements/TextCircleElement';
+import TextMessageSquareElement from './elements/TextMessageSquareElement';
+import TextArrowLeftElement from './elements/TextArrowLeftElement';
+import TextArrowRightElement from './elements/TextArrowRightElement';
 import { ToolType } from './ToolsPanel';
 import Konva from 'konva';
 import { 
@@ -18,7 +18,7 @@ import {
   ShapeElement as ShapeElementModel, 
   ImageElement as ImageElementModel, 
   TextElement as TextElementModel, 
-  ShapeTextElement as ShapeTextElementModel 
+  TextShapeElement as TextShapeElementModel 
 } from '../models/BaseElement';
 
 interface EditorStageProps {
@@ -309,28 +309,28 @@ export default function EditorStage({
              // Shape Text Elements
              const shapeTextProps = {
                 ...commonProps,
-                color: (el as ShapeTextElementModel).color,
-                stroke: (el as ShapeTextElementModel).stroke,
-                strokeWidth: (el as ShapeTextElementModel).strokeWidth,
-                strokeStyle: (el as ShapeTextElementModel).strokeStyle,
-                cornerRadius: (el as ShapeTextElementModel).cornerRadius,
-                text: (el as ShapeTextElementModel).text,
-                fontSize: (el as ShapeTextElementModel).fontSize,
-                fontFamily: (el as ShapeTextElementModel).fontFamily,
-                textColor: (el as ShapeTextElementModel).textColor,
+                color: (el as TextShapeElementModel).color,
+                stroke: (el as TextShapeElementModel).stroke,
+                strokeWidth: (el as TextShapeElementModel).strokeWidth,
+                strokeStyle: (el as TextShapeElementModel).strokeStyle,
+                cornerRadius: (el as TextShapeElementModel).cornerRadius,
+                text: (el as TextShapeElementModel).text,
+                fontSize: (el as TextShapeElementModel).fontSize,
+                fontFamily: (el as TextShapeElementModel).fontFamily,
+                textColor: (el as TextShapeElementModel).textColor,
              };
 
              switch (el.type) {
                case 'rectangle-text':
-                 return <RectangleTextElement {...shapeTextProps} />;
+                 return <TextRectangleElement {...shapeTextProps} />;
                case 'circle-text':
-                 return <CircleTextElement {...shapeTextProps} />;
+                 return <TextCircleElement {...shapeTextProps} />;
                case 'message-square':
-                 return <MessageSquareTextElement {...shapeTextProps} />;
+                 return <TextMessageSquareElement {...shapeTextProps} />;
                case 'arrow-left':
-                 return <ArrowLeftTextElement {...shapeTextProps} />;
+                 return <TextArrowLeftElement {...shapeTextProps} />;
                case 'arrow-right':
-                 return <ArrowRightTextElement {...shapeTextProps} />;
+                 return <TextArrowRightElement {...shapeTextProps} />;
                default:
                  return null;
              }

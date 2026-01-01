@@ -7,7 +7,7 @@ import ShapeElement from './elements/ShapeElement';
 import TextElement from './elements/TextElement';
 import TextRectangleElement from './elements/TextRectangleElement';
 import TextCircleElement from './elements/TextCircleElement';
-import TextMessageSquareElement from './elements/TextMessageSquareElement';
+import TextChatBubbleElement from './elements/TextChatBubbleElement';
 import TextArrowLeftElement from './elements/TextArrowLeftElement';
 import TextArrowRightElement from './elements/TextArrowRightElement';
 import DrawElement from './elements/DrawElement';
@@ -169,7 +169,7 @@ export default function EditorStage({
          return;
       }
 
-      if (['rectangle', 'circle', 'triangle', 'star', 'message-square', 'arrow-left', 'arrow-right', 'rectangle-text', 'circle-text', 'text', 'image'].includes(activeTool)) {
+      if (['rectangle', 'circle', 'triangle', 'star', 'chat-bubble', 'arrow-left', 'arrow-right', 'rectangle-text', 'circle-text', 'text', 'image'].includes(activeTool)) {
          setIsDrawing(true);
          setDrawStartPos({ x, y });
          // Create a temporary element with 0 size
@@ -415,7 +415,7 @@ export default function EditorStage({
                   fill={(el as TextElementModel).textColor}
                />
              );
-          } else if (['message-square', 'arrow-left', 'arrow-right', 'rectangle-text', 'circle-text'].includes(el.type)) {
+          } else if (['chat-bubble', 'arrow-left', 'arrow-right', 'rectangle-text', 'circle-text'].includes(el.type)) {
              // Shape Text Elements
              const shapeTextProps = {
                 ...commonProps,
@@ -443,8 +443,8 @@ export default function EditorStage({
                  return <TextRectangleElement {...shapeTextProps} />;
                case 'circle-text':
                  return <TextCircleElement {...shapeTextProps} />;
-               case 'message-square':
-                 return <TextMessageSquareElement {...shapeTextProps} />;
+               case 'chat-bubble':
+                 return <TextChatBubbleElement {...shapeTextProps} />;
                case 'arrow-left':
                  return <TextArrowLeftElement {...shapeTextProps} />;
                case 'arrow-right':

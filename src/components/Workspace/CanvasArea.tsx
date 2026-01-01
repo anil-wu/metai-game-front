@@ -172,7 +172,7 @@ export default function CanvasArea({
         const top = selectedElement.y * zoom + stagePos.y;
 
         const isImage = selectedElement.type === 'image';
-        const isShape = ['rectangle', 'triangle', 'star', 'circle', 'message-square', 'arrow-left', 'arrow-right', 'rectangle-text', 'circle-text'].includes(selectedElement.type);
+        const isShape = ['rectangle', 'triangle', 'star', 'circle', 'chat-bubble', 'arrow-left', 'arrow-right', 'rectangle-text', 'circle-text'].includes(selectedElement.type);
         const isDraw = ['pencil', 'pen'].includes(selectedElement.type);
 
         // If current tool is pencil/pen, we use the top persistent toolbar, so don't show floating one for draw elements

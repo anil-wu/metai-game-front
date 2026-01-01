@@ -6,7 +6,7 @@ import RectangleToolbar from './RectangleToolbar';
 import CircleToolbar from './CircleToolbar';
 import TriangleToolbar from './TriangleToolbar';
 import StarToolbar from './StarToolbar';
-import MessageSquareToolbar from './MessageSquareToolbar';
+import ChatBubbleToolbar from './ChatBubbleToolbar';
 import ArrowToolbar from './ArrowToolbar';
 import TextRectangleToolbar from './TextRectangleToolbar';
 import TextCircleToolbar from './TextCircleToolbar';
@@ -29,8 +29,8 @@ export default function ShapeToolbar(props: ShapeToolbarProps) {
       return <TriangleToolbar {...props} />;
     case 'star':
       return <StarToolbar {...props} />;
-    case 'message-square':
-      return <MessageSquareToolbar {...props} />;
+    case 'chat-bubble':
+      return <ChatBubbleToolbar {...props} />;
     case 'arrow-left':
     case 'arrow-right':
       return <ArrowToolbar {...props} />;

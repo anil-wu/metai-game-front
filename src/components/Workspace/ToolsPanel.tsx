@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef } from 'react';
-import { MousePointer2, Square, Circle, Type, Pencil, Image as ImageIcon, Clipboard, Triangle, Star, MessageSquare, ArrowLeft, ArrowRight, PenTool, Hand, MapPin } from 'lucide-react';
+import { MousePointer2, Square, Circle, Type, Pencil, Image as ImageIcon, Clipboard, Triangle, Star, MessageCircle, ArrowLeft, ArrowRight, PenTool, Hand, MapPin } from 'lucide-react';
 import { ToolType } from './types/ToolType';
 
 interface ToolsPanelProps {
@@ -45,7 +45,7 @@ export default function ToolsPanel({ isSidebarCollapsed, activeTool, onToolChang
   );
 
   const shapeTexts = [
-    { id: 'message-square', icon: <MessageSquare size={20} /> },
+    { id: 'chat-bubble', icon: <MessageCircle size={20} /> },
     { id: 'arrow-left', icon: <BlockArrowLeftIcon size={20} /> },
     { id: 'arrow-right', icon: <BlockArrowRightIcon size={20} /> },
   ];
@@ -95,7 +95,7 @@ export default function ToolsPanel({ isSidebarCollapsed, activeTool, onToolChang
 
     if (isShape) {
        // If clicking the main shape button, we might want to select 'rectangle' if current tool is not a shape
-       if (!['rectangle', 'circle', 'triangle', 'star', 'message-square', 'arrow-left', 'arrow-right'].includes(activeTool)) {
+       if (!['rectangle', 'circle', 'triangle', 'star', 'chat-bubble', 'arrow-left', 'arrow-right'].includes(activeTool)) {
           onToolChange('rectangle');
        }
     } else if (isPen) {

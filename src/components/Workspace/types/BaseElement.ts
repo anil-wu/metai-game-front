@@ -272,7 +272,7 @@ export class ElementFactory {
       return new ImageElement(state);
     } else if (state.type === 'text') {
       return new TextElement(state);
-    } else if (['message-square', 'arrow-left', 'arrow-right', 'rectangle-text', 'circle-text'].includes(state.type)) {
+    } else if (['chat-bubble', 'arrow-left', 'arrow-right', 'rectangle-text', 'circle-text'].includes(state.type)) {
        return new TextShapeElement(state);
     } else if (['pencil', 'pen'].includes(state.type)) {
       return new DrawElement(state);
@@ -308,7 +308,7 @@ export class ElementFactory {
       });
     }
 
-    if (['message-square', 'arrow-left', 'arrow-right', 'rectangle-text', 'circle-text'].includes(type)) {
+    if (['chat-bubble', 'arrow-left', 'arrow-right', 'rectangle-text', 'circle-text'].includes(type)) {
        return new TextShapeElement({
          ...baseState,
          color: '#8b5cf6',

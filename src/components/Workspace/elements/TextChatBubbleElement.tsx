@@ -2,7 +2,7 @@ import React from 'react';
 import { Path } from 'react-konva';
 import TextShapeElement, { TextShapeElementProps } from './TextShapeElement';
 
-export default function TextMessageSquareElement(props: TextShapeElementProps) {
+export default function TextChatBubbleElement(props: TextShapeElementProps) {
   const { width, height, color = '#3b82f6', stroke, strokeWidth, strokeStyle, cornerRadius = 20 } = props;
   
   const dash = strokeStyle === 'dashed' ? [10, 5] : (strokeStyle === 'dotted' ? [2, 2] : undefined);

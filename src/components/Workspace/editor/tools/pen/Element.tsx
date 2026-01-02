@@ -2,6 +2,7 @@ import React from 'react';
 import { Line, Circle } from 'react-konva';
 import { ElementWrapper } from '../ElementWrapper';
 import { BaseElementProps } from '../../../types/ElementProps';
+import { useWorkspaceStore } from '@/store/useWorkspaceStore';
 
 export interface DrawElementProps extends BaseElementProps {
   points?: number[];
@@ -12,7 +13,9 @@ export interface DrawElementProps extends BaseElementProps {
 }
 
 export default function PenElement(props: DrawElementProps) {
+  const { updateElement } = useWorkspaceStore();
   const { 
+    id,
     points = [], 
     stroke = '#000000', 
     strokeWidth = 2, 
@@ -152,7 +155,7 @@ export default function PenElement(props: DrawElementProps) {
       // Insert point
       const newPoints = [...points];
       newPoints.splice(insertIndex, 0, x, y);
-      props.onChange?.({ points: newPoints });
+      // updateElement(id, { points: newPoints });
       // Stop bubbling so we don't trigger group selection toggles
       e.cancelBubble = true; 
     }

@@ -4,13 +4,13 @@ import React, { useState, useRef, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import ToolsPanel from './editor/ToolsPanel';
 import { ToolType } from './types/ToolType';
-import ImageToolbar from './editor/tools/image/ToolBar';
-import ShapeToolbar from './editor/tools/shape/ToolBar';
-import PencilToolbar from './editor/tools/pencil/ToolBar';
-import PenToolbar from './editor/tools/pen/ToolBar';
+import ImageInspectorBar from './editor/tools/image/InspectorBar';
+import ShapeInspectorBar from './editor/tools/shape/InspectorBar';
+import PencilInspectorBar from './editor/tools/pencil/InspectorBar';
+import PenInspectorBar from './editor/tools/pen/InspectorBar';
 import PencilSelectionToolbar from './editor/tools/pencil/SelectionToolBar';
 import PenSelectionToolbar from './editor/tools/pen/SelectionToolBar';
-import TextToolBar from './editor/tools/text/ToolBar';
+import TextInspectorBar from './editor/tools/text/InspectorBar';
 import { ZoomIn, ZoomOut } from 'lucide-react';
 import { useWorkspaceStore } from '@/store/useWorkspaceStore';
 
@@ -24,8 +24,7 @@ interface CanvasAreaProps {
 export default function CanvasArea({ 
   isSidebarCollapsed, 
 }: CanvasAreaProps) {
-  const { elements, selectedId, setElements, selectElement, updateElement } = useWorkspaceStore();
-  const [activeTool, setActiveTool] = useState<ToolType>('select');
+  const { elements, selectedId, setElements, selectElement, updateElement, activeTool, setActiveTool } = useWorkspaceStore();
   // Local state for zoom and dragging
   const [isDragging, setIsDragging] = useState(false);
   const [zoom, setZoom] = useState(1);
@@ -120,11 +119,11 @@ export default function CanvasArea({
         />
       )}
 
-      {/* Persistent DrawToolbar when in pencil/pen mode */}
+      {/* Persistent InspectorBar when in pencil/pen mode */}
       {['pencil', 'pen'].includes(activeTool) && (
         <div className="absolute z-50 left-1/2 top-4 -translate-x-1/2">
            {activeTool === 'pencil' ? (
-             <PencilToolbar 
+             <PencilInspectorBar 
                 element={(() => {
                     if (selectedId) {
                         const el = elements.find(e => e.id === selectedId);
@@ -146,7 +145,7 @@ export default function CanvasArea({
                 }}
              />
            ) : (
-             <PenToolbar 
+             <PenInspectorBar 
                 element={(() => {
                     if (selectedId) {
                         const el = elements.find(e => e.id === selectedId);
@@ -193,7 +192,7 @@ export default function CanvasArea({
 
         if (!isImage && !isShape && !isDraw) return null;
 
-        // If in text editing mode, show TextToolBar
+        // If in text editing mode, show TextInspectorBar
         if (selectedElement.isEditing) {
           return (
             <div 
@@ -205,7 +204,7 @@ export default function CanvasArea({
               }}
             >
               <div className="pointer-events-auto">
-                <TextToolBar 
+                <TextInspectorBar 
                   element={selectedElement}
                   onUpdate={handleUpdate}
                   onDownload={() => {
@@ -228,7 +227,7 @@ export default function CanvasArea({
           >
             <div className="pointer-events-auto">
               {isImage ? (
-                <ImageToolbar />
+                <ImageInspectorBar />
               ) : isDraw ? (
                 selectedElement.type === 'pencil' ? (
                   <PencilSelectionToolbar 
@@ -248,7 +247,7 @@ export default function CanvasArea({
                   />
                 )
               ) : (
-                <ShapeToolbar 
+                <ShapeInspectorBar 
                   element={selectedElement}
                   onUpdate={handleUpdate}
                   onDownload={() => {

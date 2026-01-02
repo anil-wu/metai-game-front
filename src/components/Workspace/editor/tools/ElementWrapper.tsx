@@ -1,10 +1,10 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
 import { Group } from 'react-konva';
 import Konva from 'konva';
 import { BaseElementProps } from '../../types/ElementProps';
+import { useWorkspaceStore } from '@/store/useWorkspaceStore';
 
-export { type BaseElementProps }; // Re-export for compatibility if needed, but better to fix consumers.
-
+export { type BaseElementProps };
 
 /**
  * ElementWrapper handles common Konva element behaviors:
@@ -22,15 +22,31 @@ export const ElementWrapper: React.FC<BaseElementProps> = ({
   height,
   rotation,
   isSelected,
-  onSelect,
-  onChange,
-  onDragStart,
-  onDragEnd,
-  onDblClick,
   draggable = true,
   children
 }) => {
   const groupRef = useRef<Konva.Group>(null);
+  const { activeTool, selectElement, updateElement } = useWorkspaceStore();
+
+  const handleSelect = (e: Konva.KonvaEventObject<MouseEvent>) => {
+    if (activeTool === 'select') {
+      selectElement(id);
+      e.cancelBubble = true;
+    }
+  };
+
+  const handleDragEnd = (e: Konva.KonvaEventObject<DragEvent>) => {
+    updateElement(id, {
+      x: e.target.x(),
+      y: e.target.y(),
+      rotation: e.target.rotation(),
+    });
+  };
+
+  const handleDblClick = (e: Konva.KonvaEventObject<MouseEvent>) => {
+    updateElement(id, { isEditing: true });
+    e.cancelBubble = true;
+  };
 
   return (
     <Group
@@ -41,20 +57,12 @@ export const ElementWrapper: React.FC<BaseElementProps> = ({
       width={width}
       height={height}
       rotation={rotation}
-      onClick={onSelect}
-      onTap={onSelect}
-      onDblClick={onDblClick}
-      onDblTap={onDblClick}
-      draggable={draggable}
-      onDragStart={onDragStart}
-      onDragEnd={(e) => {
-        onChange({
-          x: e.target.x(),
-          y: e.target.y(),
-          rotation: e.target.rotation(),
-        });
-        onDragEnd?.();
-      }}
+      onClick={handleSelect}
+      onTap={handleSelect}
+      onDblClick={handleDblClick}
+      onDblTap={handleDblClick}
+      draggable={draggable && activeTool === 'select'}
+      onDragEnd={handleDragEnd}
       onTransformEnd={(e) => {
         // This is usually handled by the Transformer attached to the node, 
         // but if we wrap everything in a Group, the transformer attaches to the Group.
@@ -66,7 +74,7 @@ export const ElementWrapper: React.FC<BaseElementProps> = ({
         node.scaleX(1);
         node.scaleY(1);
         
-        onChange({
+        updateElement(id, {
           x: node.x(),
           y: node.y(),
           width: Math.max(5, node.width() * scaleX),

@@ -1,20 +1,18 @@
 "use client";
 
 import React, { useState, useRef } from 'react';
-import { Pencil, ArrowDownToLine, Scan } from 'lucide-react';
+import { Pencil, ArrowDownToLine } from 'lucide-react';
 import { BaseElement } from '../../../types/BaseElement';
 import { StrokePanel } from '../shared/StrokePanel';
-import { CornerPanel } from '../shared/CornerPanel';
 
-interface RectangleToolbarProps {
+interface TextCircleInspectorBarProps {
   element: BaseElement;
   onUpdate: (updates: Partial<any>) => void;
   onDownload?: () => void;
 }
 
-export default function RectangleToolbar({ element, onUpdate, onDownload }: RectangleToolbarProps) {
+export default function TextCircleInspectorBar({ element, onUpdate, onDownload }: TextCircleInspectorBarProps) {
   const [showStrokePanel, setShowStrokePanel] = useState(false);
-  const [showCornerPanel, setShowCornerPanel] = useState(false);
   const strokeButtonRef = useRef<HTMLButtonElement>(null);
 
   const el = element as any;
@@ -23,7 +21,6 @@ export default function RectangleToolbar({ element, onUpdate, onDownload }: Rect
   const width = Math.round(el.width);
   const height = Math.round(el.height);
   const strokeWidth = el.strokeWidth || 2;
-  const cornerRadius = el.cornerRadius || 0;
 
   return (
     <div className="flex items-center gap-3 bg-white px-3 py-2 rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100 whitespace-nowrap relative">
@@ -70,25 +67,6 @@ export default function RectangleToolbar({ element, onUpdate, onDownload }: Rect
                 strokeWidth={strokeWidth}
                 onUpdate={onUpdate}
                 onClose={() => setShowStrokePanel(false)}
-            />
-         )}
-      </div>
-
-      {/* Corner Radius */}
-      <div className="relative">
-         <button 
-            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-600 transition-colors"
-            onClick={() => setShowCornerPanel(!showCornerPanel)}
-            title="Corner Radius"
-         >
-            <Scan size={18} />
-         </button>
-         
-         {showCornerPanel && (
-            <CornerPanel 
-                cornerRadius={cornerRadius}
-                onUpdate={onUpdate}
-                onClose={() => setShowCornerPanel(false)}
             />
          )}
       </div>

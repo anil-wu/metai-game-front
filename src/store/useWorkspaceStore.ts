@@ -1,13 +1,16 @@
 import { create } from 'zustand';
 import { BaseElement, ElementFactory } from '../components/workspace/types/BaseElement';
+import { ToolType } from '../components/workspace/types/ToolType';
 
 interface WorkspaceState {
   elements: BaseElement[];
   selectedId: string | null;
+  activeTool: ToolType;
   
   // Actions
   setElements: (elements: BaseElement[]) => void;
   selectElement: (id: string | null) => void;
+  setActiveTool: (tool: ToolType) => void;
   addElement: (element: BaseElement) => void;
   updateElement: (id: string, updates: Partial<any>) => void;
   removeElement: (id: string) => void;
@@ -28,10 +31,13 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => {
   return {
   elements: initialElements,
   selectedId: null,
+  activeTool: 'select',
 
   setElements: (elements) => set({ elements }),
   
   selectElement: (id) => set({ selectedId: id }),
+  
+  setActiveTool: (tool) => set({ activeTool: tool }),
   
   addElement: (element) => set((state) => ({ 
     elements: [...state.elements, element] 

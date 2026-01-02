@@ -4,11 +4,13 @@ import { Html } from 'react-konva-utils';
 import { ElementWrapper } from './ElementWrapper';
 import { BaseElementProps, TextShapeElementProps } from '../../types/ElementProps';
 import { ToolType } from '../../types/ToolType';
+import { useWorkspaceStore } from '@/store/useWorkspaceStore';
 
 export { type TextShapeElementProps };
 
 export default function TextShapeElement(props: TextShapeElementProps) {
   const { 
+    id,
     width, 
     height, 
     text = '', 
@@ -24,10 +26,10 @@ export default function TextShapeElement(props: TextShapeElementProps) {
     letterSpacing = 0,
     textDecoration = '',
     textTransform = '',
-    onChange,
     children
   } = props;
 
+  const { updateElement } = useWorkspaceStore();
   const isEditing = isEditingProp || false;
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -37,31 +39,17 @@ export default function TextShapeElement(props: TextShapeElementProps) {
     }
   }, [isEditing]);
 
-  const handleDblClick = () => {
-    onChange({ isEditing: true });
-  };
-
   const handleBlur = (e: React.FocusEvent<HTMLTextAreaElement>) => {
     // Intentionally left empty to prevent stopping editing when clicking toolbar.
     // Editing will be stopped by global click handlers or selection changes.
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    onChange({ text: e.target.value });
+    updateElement(id, { text: e.target.value });
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     e.stopPropagation(); 
-  };
-
-  const handleShapeChange = (newAttrs: any) => {
-    if (newAttrs.height && height) {
-      const scaleY = newAttrs.height / height;
-      if (scaleY > 0 && Math.abs(scaleY - 1) > 0.001) {
-        newAttrs.fontSize = Math.max(5, Math.round(fontSize * scaleY));
-      }
-    }
-    onChange(newAttrs);
   };
 
   const getCssStyles = (fontStyle: string) => {
@@ -106,7 +94,7 @@ export default function TextShapeElement(props: TextShapeElementProps) {
   const cssFontStyles = getCssStyles(fontStyle);
 
   return (
-    <ElementWrapper {...props} onDblClick={handleDblClick} onChange={handleShapeChange}>
+    <ElementWrapper {...props}>
        {children}
        <KonvaText
           text={text}

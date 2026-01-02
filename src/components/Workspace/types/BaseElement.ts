@@ -250,6 +250,20 @@ export class TextShapeElement extends ShapeElement {
     this.textTransform = state.textTransform || '';
   }
 
+  update(props: Partial<IElementState>): TextShapeElement {
+    const updates = { ...props };
+    
+    // Auto-scale font size if height changes
+    if (updates.height && this.height) {
+       const scaleY = updates.height / this.height;
+       if (scaleY > 0 && Math.abs(scaleY - 1) > 0.001) {
+         updates.fontSize = Math.max(5, Math.round(this.fontSize * scaleY));
+       }
+    }
+
+    return super.update(updates) as TextShapeElement;
+  }
+
   clone(): TextShapeElement {
     return new TextShapeElement(this.toState());
   }

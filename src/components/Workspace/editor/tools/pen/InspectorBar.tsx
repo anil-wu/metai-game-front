@@ -3,13 +3,13 @@ import { AlignJustify, Download } from 'lucide-react';
 import { BaseElement } from '../../../types/BaseElement';
 import { StrokePanel } from '../shared/StrokePanel';
 
-interface DrawToolbarProps {
+interface PenInspectorBarProps {
   element: BaseElement | { stroke?: string; strokeWidth?: number };
   onUpdate: (updates: Partial<any>) => void;
   onDownload?: () => void;
 }
 
-export default function PenToolbar({ element, onUpdate, onDownload }: DrawToolbarProps) {
+export default function PenInspectorBar({ element, onUpdate, onDownload }: PenInspectorBarProps) {
   const [showStrokePanel, setShowStrokePanel] = useState(false);
   const strokeButtonRef = useRef<HTMLButtonElement>(null);
 

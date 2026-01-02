@@ -9,11 +9,6 @@ export interface BaseElementProps {
   height: number;
   rotation: number;
   isSelected: boolean;
-  onSelect: () => void;
-  onChange: (newAttrs: any) => void;
-  onDragStart?: () => void;
-  onDragEnd?: () => void;
-  onDblClick?: () => void;
   draggable?: boolean;
   children?: React.ReactNode;
 }

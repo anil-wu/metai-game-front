@@ -8,6 +8,7 @@ interface TextElementProps extends BaseElementProps {
   fontSize?: number;
   fontFamily?: string;
   fill?: string;
+  textColor?: string; // Add support for textColor alias
   isEditing?: boolean;
   onEditEnd?: (newText: string) => void;
 }
@@ -17,12 +18,17 @@ export default function TextElement(props: TextElementProps) {
     text = 'Text', 
     fontSize = 20, 
     fontFamily = 'Arial', 
-    fill = '#000000',
+    fill,
+    textColor,
     isEditing = false,
     onEditEnd,
     width,
     height
   } = props;
+
+  // Use fill if provided, otherwise fallback to textColor, then default black
+  const finalFill = fill || textColor || '#000000';
+
 
   // We can use a textarea for editing
   // For now, let's just render text. Editing logic can be complex with Konva.
@@ -40,7 +46,7 @@ export default function TextElement(props: TextElementProps) {
          text={text}
          fontSize={fontSize}
          fontFamily={fontFamily}
-         fill={fill}
+         fill={finalFill}
          width={width}
          // height={height} // Text height is usually auto unless we wrap
        />

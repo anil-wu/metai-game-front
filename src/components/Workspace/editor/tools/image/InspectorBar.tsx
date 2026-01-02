@@ -4,7 +4,7 @@ import React from 'react';
 import { BaseElement } from '../../../types/BaseElement';
 import { ZoomIn, Scissors, Eraser, Edit, Move, PenTool, MoreHorizontal, Settings2 } from 'lucide-react';
 
-export default function ImageToolbar() {
+export default function ImageInspectorBar() {
   const items = [
     { icon: <ZoomIn size={18} />, label: "放大" },
     { icon: <Scissors size={18} />, label: "移除背景" },

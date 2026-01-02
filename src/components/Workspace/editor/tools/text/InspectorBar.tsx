@@ -6,7 +6,7 @@ import { BaseElement } from '../../../types/BaseElement';
 import { StrokePanel } from '../shared/StrokePanel';
 import { TextAdvancedPanel } from './AdvancedPanel';
 
-interface TextToolBarProps {
+interface TextInspectorBarProps {
   element: BaseElement;
   onUpdate: (updates: Partial<any>) => void;
   onDownload?: () => void;
@@ -24,7 +24,7 @@ const FONT_WEIGHTS = [
   'Normal', 'Bold', 'Italic', 'Bold Italic'
 ];
 
-export default function TextToolBar({ element, onUpdate, onDownload }: TextToolBarProps) {
+export default function TextInspectorBar({ element, onUpdate, onDownload }: TextInspectorBarProps) {
   const [showStrokePanel, setShowStrokePanel] = useState(false);
   const [showAdvancedPanel, setShowAdvancedPanel] = useState(false);
   const strokeButtonRef = useRef<HTMLButtonElement>(null);

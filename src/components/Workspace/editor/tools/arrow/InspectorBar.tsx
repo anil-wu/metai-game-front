@@ -6,13 +6,13 @@ import { BaseElement } from '../../../types/BaseElement';
 import { StrokePanel } from '../shared/StrokePanel';
 import { CornerPanel } from '../shared/CornerPanel';
 
-interface TriangleToolbarProps {
+interface ArrowInspectorBarProps {
   element: BaseElement;
   onUpdate: (updates: Partial<any>) => void;
   onDownload?: () => void;
 }
 
-export default function TriangleToolbar({ element, onUpdate, onDownload }: TriangleToolbarProps) {
+export default function ArrowInspectorBar({ element, onUpdate, onDownload }: ArrowInspectorBarProps) {
   const [showStrokePanel, setShowStrokePanel] = useState(false);
   const [showCornerPanel, setShowCornerPanel] = useState(false);
   const strokeButtonRef = useRef<HTMLButtonElement>(null);
@@ -24,7 +24,6 @@ export default function TriangleToolbar({ element, onUpdate, onDownload }: Trian
   const height = Math.round(el.height);
   const strokeWidth = el.strokeWidth || 2;
   const cornerRadius = el.cornerRadius || 0;
-  const sides = el.sides || 3;
 
   return (
     <div className="flex items-center gap-3 bg-white px-3 py-2 rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100 whitespace-nowrap relative">
@@ -75,12 +74,12 @@ export default function TriangleToolbar({ element, onUpdate, onDownload }: Trian
          )}
       </div>
 
-      {/* Corner Radius & Sides */}
+      {/* Corner Radius */}
       <div className="relative">
          <button 
             className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-600 transition-colors"
             onClick={() => setShowCornerPanel(!showCornerPanel)}
-            title="Properties"
+            title="Corner Radius"
          >
             <Scan size={18} />
          </button>
@@ -88,7 +87,6 @@ export default function TriangleToolbar({ element, onUpdate, onDownload }: Trian
          {showCornerPanel && (
             <CornerPanel 
                 cornerRadius={cornerRadius}
-                sides={sides}
                 onUpdate={onUpdate}
                 onClose={() => setShowCornerPanel(false)}
             />

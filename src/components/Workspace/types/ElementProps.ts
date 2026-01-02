@@ -3,12 +3,14 @@ import { ToolType } from './ToolType';
 
 export interface BaseElementProps {
   id: string;
+  type?: ToolType;
   x: number;
   y: number;
   width: number;
   height: number;
   rotation: number;
   isSelected: boolean;
+  isEditing?: boolean;
   draggable?: boolean;
   children?: React.ReactNode;
 }

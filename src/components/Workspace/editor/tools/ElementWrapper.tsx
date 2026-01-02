@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import { Group } from 'react-konva';
 import Konva from 'konva';
 import { BaseElementProps } from '../../types/ElementProps';
+import { ToolType } from '../../types/ToolType';
 import { useWorkspaceStore } from '@/store/useWorkspaceStore';
 
 export { type BaseElementProps };
@@ -16,6 +17,7 @@ export { type BaseElementProps };
  */
 export const ElementWrapper: React.FC<BaseElementProps> = ({
   id,
+  type,
   x,
   y,
   width, // Passed for reference, but children often handle their own sizing visually
@@ -44,7 +46,10 @@ export const ElementWrapper: React.FC<BaseElementProps> = ({
   };
 
   const handleDblClick = (e: Konva.KonvaEventObject<MouseEvent>) => {
-    updateElement(id, { isEditing: true });
+    const textEditableTypes: ToolType[] = ['text', 'chat-bubble', 'arrow-left', 'arrow-right', 'rectangle-text', 'circle-text'];
+    if (type && textEditableTypes.includes(type)) {
+      updateElement(id, { isEditing: true });
+    }
     e.cancelBubble = true;
   };
 

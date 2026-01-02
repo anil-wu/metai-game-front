@@ -1,1 +1,1 @@
-export type ToolType = 'select' | 'hand' | 'mark' | 'rectangle' | 'circle' | 'triangle' | 'star' | 'chat-bubble' | 'arrow-left' | 'arrow-right' | 'text' | 'pencil' | 'pen' | 'image' | 'clipboard' | 'rectangle-text' | 'circle-text';
+export type ToolType = 'select' | 'hand' | 'rectangle' | 'circle' | 'triangle' | 'star' | 'chat-bubble' | 'arrow-left' | 'arrow-right' | 'text' | 'pencil' | 'pen' | 'image' | 'rectangle-text' | 'circle-text';

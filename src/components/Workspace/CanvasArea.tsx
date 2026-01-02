@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import ToolsPanel from './editor/ToolsPanel';
 import { ToolType } from './types/ToolType';
@@ -48,45 +48,41 @@ export default function CanvasArea({
     return () => window.removeEventListener('resize', updateDimensions);
   }, []);
 
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if ((e.target as HTMLElement).tagName === 'INPUT' || (e.target as HTMLElement).tagName === 'TEXTAREA') {
+      return;
+    }
+
+    switch (e.key.toLowerCase()) {
+      case 'v':
+        setActiveTool('select');
+        break;
+      case 'h':
+        setActiveTool('hand');
+        break;
+      case 'p':
+        if (e.shiftKey) {
+          setActiveTool('pencil');
+        } else {
+          setActiveTool('pen');
+        }
+        break;
+      case 'r':
+        setActiveTool('rectangle');
+        break;
+      case 'o':
+        setActiveTool('circle');
+        break;
+      case 't':
+        setActiveTool('text');
+        break;
+    }
+  }, [setActiveTool]);
+
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Ignore if user is typing in an input or textarea
-      if ((e.target as HTMLElement).tagName === 'INPUT' || (e.target as HTMLElement).tagName === 'TEXTAREA') {
-        return;
-      }
-
-      switch (e.key.toLowerCase()) {
-        case 'v':
-          setActiveTool('select');
-          break;
-        case 'h':
-          setActiveTool('hand');
-          break;
-        case 'm':
-          setActiveTool('mark');
-          break;
-        case 'p':
-          if (e.shiftKey) {
-            setActiveTool('pencil');
-          } else {
-            setActiveTool('pen');
-          }
-          break;
-        case 'r':
-          setActiveTool('rectangle');
-          break;
-        case 'o':
-          setActiveTool('circle');
-          break;
-        case 't':
-          setActiveTool('text');
-          break;
-      }
-    };
-
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [handleKeyDown]);
 
   const handleZoomIn = () => setZoom(z => Math.min(z * 1.1, 3));
   const handleZoomOut = () => setZoom(z => Math.max(z / 1.1, 0.1));
@@ -192,8 +188,9 @@ export default function CanvasArea({
 
         if (!isImage && !isShape && !isDraw) return null;
 
-        // If in text editing mode, show TextInspectorBar
-        if (selectedElement.isEditing) {
+        const isTextLike = selectedElement.type === 'text' || ['chat-bubble', 'arrow-left', 'arrow-right', 'rectangle-text', 'circle-text'].includes(selectedElement.type);
+
+        if (selectedElement.isEditing && isTextLike) {
           return (
             <div 
               className="absolute z-50 pointer-events-none transition-all duration-75 ease-out"

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef } from 'react';
-import { MousePointer2, Square, Circle, Type, Pencil, Image as ImageIcon, Clipboard, Triangle, Star, MessageCircle, ArrowLeft, ArrowRight, PenTool, Hand, MapPin } from 'lucide-react';
+import { MousePointer2, Square, Circle, Type, Pencil, Image as ImageIcon, Triangle, Star, MessageCircle, PenTool, Hand } from 'lucide-react';
 import { ToolType } from '../types/ToolType';
 
 interface ToolsPanelProps {
@@ -22,7 +22,6 @@ export default function ToolsPanel({ isSidebarCollapsed, activeTool, onToolChang
     { id: 'text', icon: <Type size={20} /> },
     { id: 'pencil', icon: <Pencil size={20} />, isPen: true },
     { id: 'image', icon: <ImageIcon size={20} /> },
-    { id: 'clipboard', icon: <Clipboard size={20} /> },
   ];
 
   const shapes = [
@@ -58,7 +57,6 @@ export default function ToolsPanel({ isSidebarCollapsed, activeTool, onToolChang
   const selectTools = [
     { id: 'select', icon: <MousePointer2 size={20} />, label: 'Select', shortcut: 'V' },
     { id: 'hand', icon: <Hand size={20} />, label: 'Hand tool', shortcut: 'H' },
-    { id: 'mark', icon: <MapPin size={20} />, label: 'Mark', shortcut: 'M' },
   ];
 
   const openMenu = (menuType: 'select' | 'shape' | 'pen' | null) => {
@@ -103,7 +101,7 @@ export default function ToolsPanel({ isSidebarCollapsed, activeTool, onToolChang
           onToolChange('pencil');
        }
     } else if (isSelect) {
-       if (!['select', 'hand', 'mark'].includes(activeTool)) {
+       if (!['select', 'hand'].includes(activeTool)) {
           onToolChange('select');
        }
     } else {
@@ -126,9 +124,9 @@ export default function ToolsPanel({ isSidebarCollapsed, activeTool, onToolChang
     setShowSelectMenu(false);
   };
 
-  const isShapeActive = ['rectangle', 'circle', 'triangle', 'star', 'message-square', 'arrow-left', 'arrow-right'].includes(activeTool);
+  const isShapeActive = ['rectangle', 'circle', 'triangle', 'star', 'chat-bubble', 'arrow-left', 'arrow-right', 'rectangle-text', 'circle-text'].includes(activeTool);
   const isPenActive = ['pencil', 'pen'].includes(activeTool);
-  const isSelectActive = ['select', 'hand', 'mark'].includes(activeTool);
+  const isSelectActive = ['select', 'hand'].includes(activeTool);
 
   return (
     <div 

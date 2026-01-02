@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import HierarchyPanel from './hierarchy/HierarchyPanel';
 import CanvasArea from './CanvasArea';
-import ChatPanel from './ChatPanel';
+import ChatPanel from './chat/ChatPanel';
 import { BaseElement, ElementFactory } from './types/BaseElement';
 
 export default function Workspace() {

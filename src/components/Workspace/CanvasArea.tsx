@@ -2,15 +2,15 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import ToolsPanel from './ToolsPanel';
+import ToolsPanel from './scene/ToolsPanel';
 import { ToolType } from './types/ToolType';
-import ImageToolbar from './elements/image/ToolBar';
-import ShapeToolbar from './elements/shape/ToolBar';
-import PencilToolbar from './elements/pencil/ToolBar';
-import PenToolbar from './elements/pen/ToolBar';
-import PencilSelectionToolbar from './elements/pencil/SelectionToolBar';
-import PenSelectionToolbar from './elements/pen/SelectionToolBar';
-import TextToolBar from './elements/text/ToolBar';
+import ImageToolbar from './scene/elements/image/ToolBar';
+import ShapeToolbar from './scene/elements/shape/ToolBar';
+import PencilToolbar from './scene/elements/pencil/ToolBar';
+import PenToolbar from './scene/elements/pen/ToolBar';
+import PencilSelectionToolbar from './scene/elements/pencil/SelectionToolBar';
+import PenSelectionToolbar from './scene/elements/pen/SelectionToolBar';
+import TextToolBar from './scene/elements/text/ToolBar';
 import { ZoomIn, ZoomOut } from 'lucide-react';
 import { BaseElement } from './types/BaseElement';
 

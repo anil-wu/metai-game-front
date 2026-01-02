@@ -44,5 +44,9 @@ export interface TextShapeElementProps extends BaseElementProps {
   isEditing?: boolean;
   fontStyle?: string;
   align?: string;
+  lineHeight?: number;
+  letterSpacing?: number;
+  textDecoration?: string;
+  textTransform?: string;
   children?: React.ReactNode;
 }

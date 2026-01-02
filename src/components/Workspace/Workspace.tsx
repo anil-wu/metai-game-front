@@ -2,15 +2,17 @@
 
 import React, { useState } from 'react';
 import HierarchyPanel from './hierarchy/HierarchyPanel';
+import ProjectPanel from './project/ProjectPanel';
 import CanvasArea from './CanvasArea';
 import ChatPanel from './chat/ChatPanel';
 import { BaseElement, ElementFactory } from './types/BaseElement';
-import { Clapperboard, Gamepad2 } from 'lucide-react';
+import { Clapperboard, Gamepad2, Layers, FolderOpen } from 'lucide-react';
 
 export default function Workspace() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isRightPanelCollapsed, setIsRightPanelCollapsed] = useState(false);
   const [viewMode, setViewMode] = useState<'scene' | 'game'>('scene');
+  const [leftPanel, setLeftPanel] = useState<'hierarchy' | 'project'>('hierarchy');
 
   // Centralized State
   const [elements, setElements] = useState<BaseElement[]>([
@@ -32,14 +34,40 @@ export default function Workspace() {
 
   return (
     <div className="flex h-screen w-full bg-gray-50">
-      <div className={`transition-all duration-300 flex-shrink-0 ${isSidebarCollapsed ? 'w-0 p-0' : 'w-auto p-4 h-full'}`}>
-        <HierarchyPanel 
-          isCollapsed={isSidebarCollapsed} 
-          toggleSidebar={toggleSidebar}
-          elements={elements}
-          selectedId={selectedId}
-          onSelect={handleLayerSelect}
-        />
+      <div className={`transition-all duration-300 flex-shrink-0 ${isSidebarCollapsed ? 'w-0 p-0' : 'w-auto p-4 h-full'} flex flex-col gap-3`}>
+        {!isSidebarCollapsed && (
+          <div className="flex bg-gray-200/50 p-1 rounded-xl shrink-0">
+             <button 
+               onClick={() => setLeftPanel('hierarchy')}
+               className={`flex-1 flex items-center justify-center py-1.5 rounded-lg text-xs font-medium transition-all ${leftPanel === 'hierarchy' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}
+             >
+               <Layers size={14} className="mr-1.5" />
+               图层
+             </button>
+             <button 
+               onClick={() => setLeftPanel('project')}
+               className={`flex-1 flex items-center justify-center py-1.5 rounded-lg text-xs font-medium transition-all ${leftPanel === 'project' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}
+             >
+               <FolderOpen size={14} className="mr-1.5" />
+               项目
+             </button>
+          </div>
+        )}
+
+        {leftPanel === 'hierarchy' ? (
+          <HierarchyPanel 
+            isCollapsed={isSidebarCollapsed} 
+            toggleSidebar={toggleSidebar}
+            elements={elements}
+            selectedId={selectedId}
+            onSelect={handleLayerSelect}
+          />
+        ) : (
+          <ProjectPanel 
+            isCollapsed={isSidebarCollapsed}
+            toggleSidebar={toggleSidebar}
+          />
+        )}
       </div>
       
       <div className="flex flex-1 flex-col bg-gray-50 overflow-hidden relative">

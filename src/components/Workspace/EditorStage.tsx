@@ -24,11 +24,9 @@ import {
   DrawElement as DrawElementModel
 } from './types/BaseElement';
 
+import { useWorkspaceStore } from '@/store/useWorkspaceStore';
+
 interface EditorStageProps {
-  elements: BaseElementModel[];
-  onElementsChange: (elements: BaseElementModel[]) => void;
-  selectedId: string | null;
-  onSelect: (id: string | null) => void;
   activeTool: ToolType;
   onToolUsed: () => void;
   zoom: number;
@@ -43,10 +41,6 @@ interface EditorStageProps {
 }
 
 export default function EditorStage({
-  elements,
-  onElementsChange,
-  selectedId,
-  onSelect,
   activeTool,
   onToolUsed,
   zoom,
@@ -59,6 +53,7 @@ export default function EditorStage({
   onToolChange,
   drawingStyle,
 }: EditorStageProps) {
+  const { elements, selectedId, setElements, selectElement, addElement, updateElement } = useWorkspaceStore();
   const stageRef = useRef<Konva.Stage>(null);
   const transformerRef = useRef<Konva.Transformer>(null);
 
@@ -158,8 +153,8 @@ export default function EditorStage({
           points: newPoints
       });
 
-      onElementsChange([...elements, finalElement]);
-      onSelect(finalElement.id);
+      addElement(finalElement);
+      selectElement(finalElement.id);
       onToolUsed();
       
       setIsDrawing(false);
@@ -179,17 +174,12 @@ export default function EditorStage({
       if (activeTool === 'select') {
         // If we are deselecting, we should also stop editing any element
         if (selectedId) {
-             const updatedElements = elements.map(el => {
-                if (el.id === selectedId && el.isEditing) {
-                    return el.update({ isEditing: false });
-                }
-                return el;
-             });
-             if (updatedElements !== elements) {
-                 onElementsChange(updatedElements);
+             const selectedElement = elements.find(el => el.id === selectedId);
+             if (selectedElement && selectedElement.isEditing) {
+                 updateElement(selectedId, { isEditing: false });
              }
         }
-        onSelect(null);
+        selectElement(null);
         return;
       }
 
@@ -301,17 +291,12 @@ export default function EditorStage({
          
          // Deselect current and stop editing
          if (selectedId) {
-             const updatedElements = elements.map(el => {
-                if (el.id === selectedId && el.isEditing) {
-                    return el.update({ isEditing: false });
-                }
-                return el;
-             });
-             if (updatedElements !== elements) {
-                 onElementsChange(updatedElements);
+             const selectedElement = elements.find(el => el.id === selectedId);
+             if (selectedElement && selectedElement.isEditing) {
+                 updateElement(selectedId, { isEditing: false });
              }
          }
-         onSelect(null);
+         selectElement(null);
       }
       return;
     }
@@ -322,17 +307,12 @@ export default function EditorStage({
       if (clickedId) {
         // If clicking a different element, stop editing the previous one
         if (selectedId && selectedId !== clickedId) {
-             const updatedElements = elements.map(el => {
-                if (el.id === selectedId && el.isEditing) {
-                    return el.update({ isEditing: false });
-                }
-                return el;
-             });
-             if (updatedElements !== elements) {
-                 onElementsChange(updatedElements);
+             const selectedElement = elements.find(el => el.id === selectedId);
+             if (selectedElement && selectedElement.isEditing) {
+                 updateElement(selectedId, { isEditing: false });
              }
         }
-        onSelect(clickedId);
+        selectElement(clickedId);
       }
     }
   };
@@ -489,8 +469,8 @@ export default function EditorStage({
         }
     }
 
-    onElementsChange([...elements, finalElement]);
-    onSelect(finalElement.id);
+    addElement(finalElement);
+    selectElement(finalElement.id);
     onToolUsed();
     
     setIsDrawing(false);
@@ -499,13 +479,7 @@ export default function EditorStage({
   };
 
   const handleElementChange = (id: string, newAttrs: any) => {
-    const updatedElements = elements.map((el) => {
-      if (el.id === id) {
-        return el.update(newAttrs);
-      }
-      return el;
-    });
-    onElementsChange(updatedElements);
+    updateElement(id, newAttrs);
   };
 
   return (
@@ -553,7 +527,7 @@ export default function EditorStage({
             height: el.height,
             rotation: el.rotation,
             isSelected: selectedId === el.id,
-            onSelect: () => activeTool === 'select' && onSelect(el.id),
+            onSelect: () => activeTool === 'select' && selectElement(el.id),
             onChange: (attrs: any) => handleElementChange(el.id, attrs),
             onDragStart: onDragStart,
             onDragEnd: onDragEnd,

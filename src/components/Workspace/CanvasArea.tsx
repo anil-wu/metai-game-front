@@ -12,28 +12,21 @@ import PencilSelectionToolbar from './editor/tools/pencil/SelectionToolBar';
 import PenSelectionToolbar from './editor/tools/pen/SelectionToolBar';
 import TextToolBar from './editor/tools/text/ToolBar';
 import { ZoomIn, ZoomOut } from 'lucide-react';
-import { BaseElement } from './types/BaseElement';
+import { useWorkspaceStore } from '@/store/useWorkspaceStore';
 
 // Dynamically import EditorStage to avoid SSR issues with Konva
 const EditorStage = dynamic(() => import('./EditorStage'), { ssr: false });
 
 interface CanvasAreaProps {
   isSidebarCollapsed: boolean;
-  elements: BaseElement[];
-  onElementsChange: (elements: BaseElement[]) => void;
-  selectedId: string | null;
-  onSelect: (id: string | null) => void;
 }
 
 export default function CanvasArea({ 
   isSidebarCollapsed, 
-  elements, 
-  onElementsChange, 
-  selectedId, 
-  onSelect 
 }: CanvasAreaProps) {
+  const { elements, selectedId, setElements, selectElement, updateElement } = useWorkspaceStore();
   const [activeTool, setActiveTool] = useState<ToolType>('select');
-  // Local state for zoom and dragging, but elements are now props
+  // Local state for zoom and dragging
   const [isDragging, setIsDragging] = useState(false);
   const [zoom, setZoom] = useState(1);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -117,10 +110,6 @@ export default function CanvasArea({
       {/* Canvas Stage Layer */}
       {dimensions.width > 0 && dimensions.height > 0 && (
         <EditorStage 
-          elements={elements}
-          onElementsChange={onElementsChange}
-          selectedId={selectedId}
-          onSelect={onSelect}
           activeTool={activeTool}
           onToolUsed={() => {}}
           onToolChange={setActiveTool}
@@ -198,7 +187,12 @@ export default function CanvasArea({
 
         // Use stage-relative coordinates, taking zoom and pan into account
         const left = (selectedElement.x + selectedElement.width / 2) * zoom + stagePos.x;
-        const top = selectedElement.y * zoom + stagePos.y;
+        // Position above the element: y - padding
+        const top = selectedElement.y * zoom + stagePos.y - 20;
+
+        const handleUpdate = (updates: any) => {
+            updateElement(selectedId, updates);
+        };
 
         const isImage = selectedElement.type === 'image';
         const isShape = ['rectangle', 'triangle', 'star', 'circle', 'chat-bubble', 'arrow-left', 'arrow-right', 'rectangle-text', 'circle-text'].includes(selectedElement.type);
@@ -217,18 +211,13 @@ export default function CanvasArea({
               style={{
                 left: left,
                 top: top,
-                transform: 'translate(-50%, -100%) translateY(-12px)'
+                transform: 'translate(-50%, -100%)'
               }}
             >
               <div className="pointer-events-auto">
                 <TextToolBar 
                   element={selectedElement}
-                  onUpdate={(updates) => {
-                    const newElements = elements.map(el => 
-                      el.id === selectedId ? el.update(updates) : el
-                    );
-                    onElementsChange(newElements);
-                  }}
+                  onUpdate={handleUpdate}
                   onDownload={() => {
                     console.log('Download', selectedElement);
                   }}
@@ -244,7 +233,7 @@ export default function CanvasArea({
             style={{
               left: left,
               top: top,
-              transform: 'translate(-50%, -100%) translateY(-12px)'
+              transform: 'translate(-50%, -100%)'
             }}
           >
             <div className="pointer-events-auto">
@@ -254,12 +243,7 @@ export default function CanvasArea({
                 selectedElement.type === 'pencil' ? (
                   <PencilSelectionToolbar 
                     element={selectedElement}
-                    onUpdate={(updates) => {
-                      const newElements = elements.map(el => 
-                        el.id === selectedId ? el.update(updates) : el
-                      );
-                      onElementsChange(newElements);
-                    }}
+                    onUpdate={handleUpdate}
                     onDownload={() => {
                       console.log('Download', selectedElement);
                     }}
@@ -267,12 +251,7 @@ export default function CanvasArea({
                 ) : (
                   <PenSelectionToolbar 
                     element={selectedElement}
-                    onUpdate={(updates) => {
-                      const newElements = elements.map(el => 
-                        el.id === selectedId ? el.update(updates) : el
-                      );
-                      onElementsChange(newElements);
-                    }}
+                    onUpdate={handleUpdate}
                     onDownload={() => {
                       console.log('Download', selectedElement);
                     }}
@@ -281,12 +260,7 @@ export default function CanvasArea({
               ) : (
                 <ShapeToolbar 
                   element={selectedElement}
-                  onUpdate={(updates) => {
-                    const newElements = elements.map(el => 
-                      el.id === selectedId ? el.update(updates) : el
-                    );
-                    onElementsChange(newElements);
-                  }}
+                  onUpdate={handleUpdate}
                   onDownload={() => {
                     console.log('Download', selectedElement);
                   }}

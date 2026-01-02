@@ -80,7 +80,10 @@ export abstract class BaseElement {
   
   update(props: Partial<IElementState>): BaseElement {
     const newState = { ...this.toState(), ...props };
-    return ElementFactory.create(newState);
+    // Use the constructor of the current instance to create a new one
+    // This avoids dependency on ElementFactory and circular dependencies
+    const Constructor = this.constructor as new (state: IElementState) => BaseElement;
+    return new Constructor(newState);
   }
 
   toState(): IElementState {

@@ -6,7 +6,6 @@ import ProjectPanel from './project/ProjectPanel';
 import GamePanel from './game/GamePanel';
 import CanvasArea from './CanvasArea';
 import ChatPanel from './chat/ChatPanel';
-import { BaseElement, ElementFactory } from './types/BaseElement';
 import { Clapperboard, Gamepad2, Layers, FolderOpen, PenTool } from 'lucide-react';
 
 export default function Workspace() {
@@ -15,22 +14,12 @@ export default function Workspace() {
   const [viewMode, setViewMode] = useState<'editor' | 'game'>('editor');
   const [leftPanel, setLeftPanel] = useState<'hierarchy' | 'project'>('hierarchy');
 
-  // Centralized State
-  const [elements, setElements] = useState<BaseElement[]>([
-    ElementFactory.createDefault('image', 100, 100, 'initial-img')
-  ]);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-
   const toggleSidebar = () => {
     setIsSidebarCollapsed(!isSidebarCollapsed);
   };
 
   const toggleRightPanel = () => {
     setIsRightPanelCollapsed(!isRightPanelCollapsed);
-  };
-
-  const handleLayerSelect = (id: string | null) => {
-    setSelectedId(id);
   };
 
   return (
@@ -59,9 +48,6 @@ export default function Workspace() {
           <HierarchyPanel 
             isCollapsed={isSidebarCollapsed} 
             toggleSidebar={toggleSidebar}
-            elements={elements}
-            selectedId={selectedId}
-            onSelect={handleLayerSelect}
           />
         ) : (
           <ProjectPanel 
@@ -94,10 +80,6 @@ export default function Workspace() {
         {viewMode === 'editor' ? (
           <CanvasArea 
             isSidebarCollapsed={isSidebarCollapsed}
-            elements={elements}
-            onElementsChange={setElements}
-            selectedId={selectedId}
-            onSelect={setSelectedId}
           />
         ) : (
           <GamePanel />

@@ -3,16 +3,19 @@
 import React, { useState } from 'react';
 import { ChevronRight, Eye, Lock, ChevronUp, ChevronDown, Minimize2, Image as ImageIcon, Layers } from 'lucide-react';
 import { BaseElement } from '../types/BaseElement';
+import { useWorkspaceStore } from '@/store/useWorkspaceStore';
 
 interface HierarchyPanelProps {
   isCollapsed: boolean;
   toggleSidebar: () => void;
-  elements: BaseElement[];
-  selectedId: string | null;
-  onSelect: (id: string | null) => void;
 }
 
-export default function HierarchyPanel({ isCollapsed, toggleSidebar, elements, selectedId, onSelect }: HierarchyPanelProps) {
+export default function HierarchyPanel({ isCollapsed, toggleSidebar }: HierarchyPanelProps) {
+  const store = useWorkspaceStore();
+  const elements = store?.elements || [];
+  const selectedId = store?.selectedId || null;
+  const selectElement = store?.selectElement || (() => {});
+  
   const [isHistoryOpen, setIsHistoryOpen] = useState(true);
 
   if (isCollapsed) {
@@ -59,7 +62,7 @@ export default function HierarchyPanel({ isCollapsed, toggleSidebar, elements, s
             key={el.id}
             element={el}
             active={selectedId === el.id} 
-            onClick={() => onSelect(el.id)}
+            onClick={() => selectElement(el.id)}
           />
         ))}
         {elements.length === 0 && (

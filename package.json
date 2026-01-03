@@ -17,6 +17,7 @@
     "react-konva": "^18.2.10",
     "react-konva-utils": "^2.0.0",
     "use-image": "^1.1.4",
+    "zundo": "^2.3.0",
     "zustand": "^5.0.9"
   },
   "devDependencies": {

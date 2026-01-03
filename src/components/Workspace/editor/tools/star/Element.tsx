@@ -4,7 +4,7 @@ import { ElementWrapper } from '../ElementWrapper';
 import { ShapeElementProps } from '../shape/Element';
 
 export default function StarElement(props: ShapeElementProps) {
-  const { width, height, color = '#3b82f6', stroke, strokeWidth, strokeStyle, cornerRadius, sides, starInnerRadius, children } = props;
+  const { width, height, color = '#3b82f6', stroke, strokeWidth, strokeStyle, cornerRadius, sides, starInnerRadius } = props;
 
   const getDash = () => {
     switch (strokeStyle) {
@@ -128,7 +128,6 @@ export default function StarElement(props: ShapeElementProps) {
         strokeWidth={strokeWidth}
         dash={getDash()}
       />
-      {children}
     </ElementWrapper>
   );
 }

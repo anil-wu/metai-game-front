@@ -1,9 +1,9 @@
 import Konva from 'konva';
 import { BaseMouseAction } from '../base/BaseMouseAction';
-import { ToolContext } from '../interfaces/Tool';
+import { ToolContext } from '../../interfaces/IMouseAction';
 import { ToolType } from '../../../types/ToolType';
 
-export class HandMouseAction extends BaseMouseAction {
+export class MouseAction extends BaseMouseAction {
   type: ToolType = 'hand';
   private isDragging: boolean = false;
   private lastPointerPosition: { x: number, y: number } | null = null;

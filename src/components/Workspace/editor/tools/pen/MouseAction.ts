@@ -1,10 +1,10 @@
 import Konva from 'konva';
 import { DrawMouseAction } from '../base/DrawMouseAction';
-import { ToolContext } from '../interfaces/Tool';
+import { ToolContext } from '../../interfaces/IMouseAction';
 import { ElementFactory, DrawElement } from '../../../types/BaseElement';
 import { useWorkspaceStore } from '@/store/useWorkspaceStore';
 
-export class PenMouseAction extends DrawMouseAction {
+export class MouseAction extends DrawMouseAction {
   type = 'pen' as const;
 
   onMouseDown(e: Konva.KonvaEventObject<MouseEvent>, context: ToolContext): void {
@@ -29,17 +29,18 @@ export class PenMouseAction extends DrawMouseAction {
       setIsDrawing(true);
       this.startPos = pos;
       
-      const newEl = ElementFactory.createDefault(this.type, 0, 0);
-      const drawEl = newEl as DrawElement;
-      drawEl.points = [pos.x, pos.y, pos.x, pos.y]; // Start + Preview Point
-      drawEl.x = 0;
-      drawEl.y = 0;
+      let newEl = ElementFactory.createDefault(this.type, 0, 0);
+      newEl = newEl.update({
+        points: [pos.x, pos.y, pos.x, pos.y], // Start + Preview Point
+        x: 0,
+        y: 0,
+        ...(drawingStyle ? {
+          stroke: drawingStyle.stroke,
+          strokeWidth: drawingStyle.strokeWidth
+        } : {})
+      });
       
-      if (drawingStyle) {
-        drawEl.stroke = drawingStyle.stroke;
-        drawEl.strokeWidth = drawingStyle.strokeWidth;
-      }
-      setPreviewElement(drawEl);
+      setPreviewElement(newEl as DrawElement);
     } else {
       // Continue existing Pen path
       const drawEl = previewElement as DrawElement;

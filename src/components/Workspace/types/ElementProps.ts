@@ -1,49 +1,20 @@
-import React from 'react';
-import { ToolType } from './ToolType';
+import { 
+  ElementState, 
+  ShapeState, 
+  TextShapeState,
+  BaseElementState
+} from './ElementState';
 
-export interface BaseElementProps {
-  id: string;
-  type?: ToolType;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  rotation: number;
+// 基础 Props，所有组件通用
+export type BaseElementProps<T extends BaseElementState = BaseElementState> = T & {
   isSelected: boolean;
   isEditing?: boolean;
   draggable?: boolean;
-  children?: React.ReactNode;
-}
+};
 
-export interface ShapeElementProps extends BaseElementProps {
-  type: ToolType;
-  color?: string;
-  stroke?: string;
-  strokeWidth?: number;
-  strokeStyle?: 'solid' | 'dashed' | 'dotted';
-  cornerRadius?: number;
-  sides?: number;
-  starInnerRadius?: number;
-}
+// 具体的 Props 类型
+export type ShapeElementProps = BaseElementProps<ShapeState>;
+export type TextShapeElementProps = BaseElementProps<TextShapeState>;
 
-export interface TextShapeElementProps extends BaseElementProps {
-  color?: string;
-  stroke?: string;
-  strokeWidth?: number;
-  strokeStyle?: 'solid' | 'dashed' | 'dotted';
-  cornerRadius?: number;
-  text?: string;
-  fontSize?: number;
-  fontFamily?: string;
-  textColor?: string;
-  textStroke?: string;
-  textStrokeWidth?: number;
-  isEditing?: boolean;
-  fontStyle?: string;
-  align?: string;
-  lineHeight?: number;
-  letterSpacing?: number;
-  textDecoration?: string;
-  textTransform?: string;
-  children?: React.ReactNode;
-}
+// 如果需要，可以导出联合类型 Props
+export type ElementProps = BaseElementProps<ElementState>;

@@ -15,7 +15,7 @@ export { type BaseElementProps };
  * - Dragging logic (onDragStart, onDragEnd)
  * - Transformation logic (via Transformer in parent, but this updates state)
  */
-export const ElementWrapper: React.FC<BaseElementProps> = ({
+export const ElementWrapper: React.FC<BaseElementProps & { children?: React.ReactNode }> = ({
   id,
   type,
   x,

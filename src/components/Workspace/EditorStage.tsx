@@ -12,7 +12,7 @@ import {
 import { useWorkspaceStore } from '@/store/useWorkspaceStore';
 
 import { ToolFactory } from './editor/tools/ToolFactory';
-import { IMouseAction, ToolContext } from './editor/tools/interfaces/Tool';
+import { IMouseAction, ToolContext } from './editor/interfaces/IMouseAction';
 import { getElementComponent } from './editor/tools/ElementRegistry';
 
 
@@ -24,8 +24,6 @@ interface EditorStageProps {
   onStagePosChange?: (pos: { x: number, y: number }) => void;
   width: number;
   height: number;
-  onDragStart?: () => void;
-  onDragEnd?: () => void;
   onToolChange?: (tool: ToolType) => void;
   drawingStyle?: { stroke: string; strokeWidth: number };
 }
@@ -38,18 +36,15 @@ export default function EditorStage({
   onStagePosChange,
   width,
   height,
-  onDragStart,
-  onDragEnd,
   onToolChange,
   drawingStyle,
 }: EditorStageProps) {
-  const { elements, selectedId, setElements, selectElement, addElement, updateElement } = useWorkspaceStore();
+  const { elements, selectedId } = useWorkspaceStore();
   const stageRef = useRef<Konva.Stage>(null);
   const transformerRef = useRef<Konva.Transformer>(null);
 
   const [isDrawing, setIsDrawing] = useState(false);
-  const [drawStartPos, setDrawStartPos] = useState({ x: 0, y: 0 });
-  const [previewElement, setPreviewElement] = useState<BaseElementModel | null>(null);
+  const [previewElement, setPreviewElement] = useState<BaseElementModel<any> | null>(null);
   const [isClosingPath, setIsClosingPath] = useState(false);
 
   // Tool Instance Management
@@ -121,18 +116,6 @@ export default function EditorStage({
       transformerRef.current.nodes([]);
     }
   }, [selectedId, elements, isDrawing]);
-
-
-
-
-
-
-
-
-
-  const handleElementChange = (id: string, newAttrs: any) => {
-    updateElement(id, newAttrs);
-  };
 
   return (
     <Stage

@@ -6,7 +6,7 @@ import { BaseElement } from '../../../types/BaseElement';
 import { StrokePanel } from '../shared/StrokePanel';
 
 interface TextCircleInspectorBarProps {
-  element: BaseElement;
+  element: BaseElement<any>;
   onUpdate: (updates: Partial<any>) => void;
   onDownload?: () => void;
 }

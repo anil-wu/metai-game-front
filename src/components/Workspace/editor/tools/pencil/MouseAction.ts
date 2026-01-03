@@ -1,10 +1,10 @@
 import Konva from 'konva';
 import { DrawMouseAction } from '../base/DrawMouseAction';
-import { ToolContext } from '../interfaces/Tool';
+import { ToolContext } from '../../interfaces/IMouseAction';
 import { ElementFactory, DrawElement } from '../../../types/BaseElement';
 import { useWorkspaceStore } from '@/store/useWorkspaceStore';
 
-export class PencilMouseAction extends DrawMouseAction {
+export class MouseAction extends DrawMouseAction {
   type = 'pencil' as const;
 
   onMouseDown(e: Konva.KonvaEventObject<MouseEvent>, context: ToolContext): void {
@@ -19,18 +19,18 @@ export class PencilMouseAction extends DrawMouseAction {
     setIsDrawing(true);
     this.startPos = pos;
     
-    const newEl = ElementFactory.createDefault(this.type, 0, 0);
-    const drawEl = newEl as DrawElement;
-    drawEl.points = [pos.x, pos.y];
-    drawEl.x = 0;
-    drawEl.y = 0;
-    
-    if (drawingStyle) {
-      drawEl.stroke = drawingStyle.stroke;
-      drawEl.strokeWidth = drawingStyle.strokeWidth;
-    }
+    let newEl = ElementFactory.createDefault(this.type, 0, 0);
+    newEl = newEl.update({
+      points: [pos.x, pos.y],
+      x: 0,
+      y: 0,
+      ...(drawingStyle ? {
+        stroke: drawingStyle.stroke,
+        strokeWidth: drawingStyle.strokeWidth
+      } : {})
+    });
 
-    setPreviewElement(drawEl);
+    setPreviewElement(newEl as DrawElement);
     
     if (selectedId) {
       const selectedElement = elements.find(el => el.id === selectedId);

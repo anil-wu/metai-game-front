@@ -42,11 +42,23 @@ export default function HierarchyPanel({ isCollapsed, toggleSidebar }: Hierarchy
       
       {/* History Content */}
       {isHistoryOpen && (
-        <div className="p-6 flex flex-col items-center justify-center border-b border-gray-100 bg-gray-50/50">
-          <div className="w-20 h-16 bg-gray-200 rounded-lg mb-3 flex items-center justify-center text-gray-300">
-             <ImageIcon size={32} />
-          </div>
-          <span className="text-xs text-gray-400 font-medium">暂无历史记录</span>
+        <div className="p-4 flex flex-col items-center justify-center border-b border-gray-100 bg-gray-50/50">
+           <div className="flex gap-2 mb-2 w-full">
+             <button 
+                className="flex-1 py-1.5 px-3 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                onClick={() => useWorkspaceStore.temporal.getState().undo()}
+                disabled={useWorkspaceStore.temporal.getState().pastStates.length === 0}
+             >
+                撤销 ({useWorkspaceStore.temporal.getState().pastStates.length})
+             </button>
+             <button 
+                className="flex-1 py-1.5 px-3 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                onClick={() => useWorkspaceStore.temporal.getState().redo()}
+                disabled={useWorkspaceStore.temporal.getState().futureStates.length === 0}
+             >
+                重做 ({useWorkspaceStore.temporal.getState().futureStates.length})
+             </button>
+           </div>
         </div>
       )}
 
@@ -83,7 +95,7 @@ export default function HierarchyPanel({ isCollapsed, toggleSidebar }: Hierarchy
   );
 }
 
-function LayerItem({ element, active, onClick }: { element: BaseElement, active: boolean, onClick: () => void }) {
+function LayerItem({ element, active, onClick }: { element: BaseElement<any>, active: boolean, onClick: () => void }) {
   // Determine icon/image based on type
   const isImage = element.type === 'image';
   const imageUrl = isImage ? (element as any).src : null;

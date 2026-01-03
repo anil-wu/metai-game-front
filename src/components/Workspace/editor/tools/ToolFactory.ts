@@ -1,13 +1,13 @@
 import { ToolType } from '../../types/ToolType';
-import { IMouseAction } from './interfaces/Tool';
-import { SelectionMouseAction } from './select/SelectionMouseAction';
-import { RectangleMouseAction } from './rectangle/RectangleMouseAction';
+import { IMouseAction } from '../interfaces/IMouseAction';
+import { MouseAction as SelectionMouseAction } from './select/MouseAction';
+import { MouseAction as RectangleMouseAction } from './rectangle/MouseAction';
 import { CircleMouseAction } from './circle/CircleMouseAction';
-import { TriangleMouseAction } from './triangle/TriangleMouseAction';
-import { StarMouseAction } from './star/StarMouseAction';
-import { PencilMouseAction } from './pencil/PencilMouseAction';
-import { PenMouseAction } from './pen/PenMouseAction';
-import { HandMouseAction } from './hand/HandMouseAction';
+import { MouseAction as TriangleMouseAction } from './triangle/MouseAction';
+import { MouseAction as StarMouseAction } from './star/MouseAction';
+import { MouseAction as PencilMouseAction } from './pencil/MouseAction';
+import { MouseAction as PenMouseAction } from './pen/MouseAction';
+import { MouseAction } from './hand/MouseAction';
 import { ShapeMouseAction } from './base/ShapeMouseAction';
 
 export class ToolFactory {
@@ -28,7 +28,7 @@ export class ToolFactory {
       case 'pen':
         return new PenMouseAction();
       case 'hand':
-        return new HandMouseAction();
+        return new MouseAction();
       default:
         // Generic shapes that use the standard ShapeMouseAction implementation
         const genericShapes: ToolType[] = [

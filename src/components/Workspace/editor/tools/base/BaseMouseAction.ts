@@ -1,5 +1,5 @@
 import Konva from 'konva';
-import { IMouseAction, ToolContext } from '../interfaces/Tool';
+import { IMouseAction, ToolContext } from '../../interfaces/IMouseAction';
 import { ToolType } from '../../../types/ToolType';
 import { getStagePos } from '../../utils/stageUtils';
 

@@ -1,6 +1,6 @@
 import Konva from 'konva';
-import { BaseElement } from '../../../types/BaseElement';
-import { ToolType } from '../../../types/ToolType';
+import { BaseElement } from '../../types/BaseElement';
+import { ToolType } from '../../types/ToolType';
 
 export interface ToolContext {
   // UI Rendering & Interaction State

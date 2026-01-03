@@ -7,7 +7,7 @@ import { StrokePanel } from '../shared/StrokePanel';
 import { CornerPanel } from '../shared/CornerPanel';
 
 interface ArrowInspectorBarProps {
-  element: BaseElement;
+  element: BaseElement<any>;
   onUpdate: (updates: Partial<any>) => void;
   onDownload?: () => void;
 }

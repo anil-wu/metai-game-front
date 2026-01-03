@@ -1,6 +1,6 @@
 import Konva from 'konva';
 import { BaseMouseAction } from './BaseMouseAction';
-import { ToolContext } from '../interfaces/Tool';
+import { ToolContext } from '../../interfaces/IMouseAction';
 import { ToolType } from '../../../types/ToolType';
 import { ElementFactory } from '../../../types/BaseElement';
 import { useWorkspaceStore } from '@/store/useWorkspaceStore';
@@ -25,9 +25,8 @@ export class ShapeMouseAction extends BaseMouseAction {
     setIsDrawing(true);
 
     // Create temporary element
-    const newEl = ElementFactory.createDefault(this.type, pos.x, pos.y);
-    newEl.width = 0;
-    newEl.height = 0;
+    let newEl = ElementFactory.createDefault(this.type, pos.x, pos.y);
+    newEl = newEl.update({ width: 0, height: 0 });
     setPreviewElement(newEl);
 
     // Deselect current

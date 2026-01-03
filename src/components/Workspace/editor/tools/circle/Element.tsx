@@ -4,7 +4,7 @@ import { ElementWrapper } from '../ElementWrapper';
 import { ShapeElementProps } from '../shape/Element';
 
 export default function CircleElement(props: ShapeElementProps) {
-  const { width, height, color = '#3b82f6', stroke, strokeWidth, strokeStyle, cornerRadius, children } = props;
+  const { width, height, color = '#3b82f6', stroke, strokeWidth, strokeStyle, cornerRadius } = props;
 
   const getDash = () => {
     switch (strokeStyle) {
@@ -38,7 +38,6 @@ export default function CircleElement(props: ShapeElementProps) {
           dash={getDash()}
         />
       )}
-      {children}
     </ElementWrapper>
   );
 }

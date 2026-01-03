@@ -4,7 +4,7 @@ import { BaseElement } from '../../../types/BaseElement';
 import { StrokePanel } from '../shared/StrokePanel';
 
 interface PencilInspectorBarProps {
-  element: BaseElement | { stroke?: string; strokeWidth?: number };
+  element: BaseElement<any> | { stroke?: string; strokeWidth?: number };
   onUpdate: (updates: Partial<any>) => void;
   onDownload?: () => void;
 }

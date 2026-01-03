@@ -8,7 +8,7 @@ import { useWorkspaceStore } from '@/store/useWorkspaceStore';
 
 export { type TextShapeElementProps };
 
-export default function TextShapeElement(props: TextShapeElementProps) {
+export default function TextShapeElement(props: TextShapeElementProps & { children?: React.ReactNode }) {
   const { 
     id,
     width, 

@@ -7,7 +7,7 @@ import { StrokePanel } from '../shared/StrokePanel';
 import { TextAdvancedPanel } from './AdvancedPanel';
 
 interface TextInspectorBarProps {
-  element: BaseElement;
+  element: BaseElement<any>;
   onUpdate: (updates: Partial<any>) => void;
   onDownload?: () => void;
 }

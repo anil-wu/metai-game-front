@@ -1,7 +1,7 @@
 import { ShapeMouseAction } from '../base/ShapeMouseAction';
 
-export class RectangleMouseAction extends ShapeMouseAction {
+export class MouseAction extends ShapeMouseAction {
   constructor() {
-    super('rectangle');
+    super('star');
   }
 }

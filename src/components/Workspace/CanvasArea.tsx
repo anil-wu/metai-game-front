@@ -24,9 +24,8 @@ interface CanvasAreaProps {
 export default function CanvasArea({ 
   isSidebarCollapsed, 
 }: CanvasAreaProps) {
-  const { elements, selectedId, setElements, selectElement, updateElement, activeTool, setActiveTool } = useWorkspaceStore();
+  const { elements, selectedId, updateElement, activeTool, setActiveTool } = useWorkspaceStore();
   // Local state for zoom and dragging
-  const [isDragging, setIsDragging] = useState(false);
   const [zoom, setZoom] = useState(1);
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
@@ -109,8 +108,6 @@ export default function CanvasArea({
           onStagePosChange={setStagePos}
           width={dimensions.width}
           height={dimensions.height}
-          onDragStart={() => setIsDragging(true)}
-          onDragEnd={() => setIsDragging(false)}
           drawingStyle={drawingStyle}
         />
       )}
@@ -166,7 +163,7 @@ export default function CanvasArea({
         </div>
       )}
 
-      {selectedId && !isDragging && (() => {
+      {selectedId && (() => {
         const selectedElement = elements.find(el => el.id === selectedId);
         if (!selectedElement) return null;
 

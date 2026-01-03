@@ -1,56 +1,77 @@
 import { create } from 'zustand';
+import { temporal, TemporalState } from 'zundo';
 import { BaseElement, ElementFactory } from '../components/workspace/types/BaseElement';
 import { ToolType } from '../components/workspace/types/ToolType';
 
 interface WorkspaceState {
-  elements: BaseElement[];
+  elements: BaseElement<any>[];
   selectedId: string | null;
   activeTool: ToolType;
   
   // Actions
-  setElements: (elements: BaseElement[]) => void;
+  setElements: (elements: BaseElement<any>[]) => void;
   selectElement: (id: string | null) => void;
   setActiveTool: (tool: ToolType) => void;
-  addElement: (element: BaseElement) => void;
+  addElement: (element: BaseElement<any>) => void;
   updateElement: (id: string, updates: Partial<any>) => void;
   removeElement: (id: string) => void;
 }
 
-export const useWorkspaceStore = create<WorkspaceState>((set) => {
-  let initialElements: BaseElement[] = [];
-  try {
-    if (typeof ElementFactory !== 'undefined') {
-      initialElements = [ElementFactory.createDefault('image', 100, 100, 'initial-img')];
-    } else {
-      console.warn('ElementFactory is undefined during store initialization');
+export const useWorkspaceStore = create<WorkspaceState>()(
+  temporal(
+    (set) => {
+      let initialElements: BaseElement<any>[] = [];
+      try {
+        if (typeof ElementFactory !== 'undefined') {
+          initialElements = [ElementFactory.createDefault('image', 100, 100, 'initial-img')];
+        } else {
+          console.warn('ElementFactory is undefined during store initialization');
+        }
+      } catch (error) {
+        console.error('Failed to create default elements:', error);
+      }
+
+      return {
+        elements: initialElements,
+        selectedId: null,
+        activeTool: 'select',
+
+        setElements: (elements) => set({ elements }),
+        
+        selectElement: (id) => set({ selectedId: id }),
+        
+        setActiveTool: (tool) => set({ activeTool: tool }),
+        
+        addElement: (element) => set((state) => ({ 
+          elements: [...state.elements, element] 
+        })),
+        
+        updateElement: (id, updates) => set((state) => ({
+          elements: state.elements.map((el) => 
+            el.id === id ? el.update(updates) : el
+          )
+        })),
+
+        removeElement: (id) => set((state) => ({
+          elements: state.elements.filter((el) => el.id !== id),
+          selectedId: state.selectedId === id ? null : state.selectedId
+        })),
+      };
+    },
+    {
+      // Configuration for zundo
+      limit: 100, // Limit history depth
+      partialize: (state) => ({ 
+        elements: state.elements 
+      }), // Only track elements history, ignore selection/tool changes
+      equality: (a, b) => {
+          // Custom equality check if needed, or rely on default shallow compare
+          // Since elements are immutable objects, shallow compare of the array usually works 
+          // if we replace the array on change.
+          // However, we need to be careful.
+          // Let's rely on default for now.
+          return a === b;
+      }
     }
-  } catch (error) {
-    console.error('Failed to create default elements:', error);
-  }
-
-  return {
-  elements: initialElements,
-  selectedId: null,
-  activeTool: 'select',
-
-  setElements: (elements) => set({ elements }),
-  
-  selectElement: (id) => set({ selectedId: id }),
-  
-  setActiveTool: (tool) => set({ activeTool: tool }),
-  
-  addElement: (element) => set((state) => ({ 
-    elements: [...state.elements, element] 
-  })),
-  
-  updateElement: (id, updates) => set((state) => ({
-    elements: state.elements.map((el) => 
-      el.id === id ? el.update(updates) : el
-    )
-  })),
-
-  removeElement: (id) => set((state) => ({
-    elements: state.elements.filter((el) => el.id !== id),
-    selectedId: state.selectedId === id ? null : state.selectedId
-  })),
-}});
+  )
+);

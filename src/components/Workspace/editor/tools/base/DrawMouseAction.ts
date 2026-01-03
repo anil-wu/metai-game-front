@@ -1,6 +1,6 @@
 import Konva from 'konva';
 import { BaseMouseAction } from './BaseMouseAction';
-import { ToolContext } from '../interfaces/Tool';
+import { ToolContext } from '../../interfaces/IMouseAction';
 import { ToolType } from '../../../types/ToolType';
 import { ElementFactory, DrawElement } from '../../../types/BaseElement';
 import { useWorkspaceStore } from '@/store/useWorkspaceStore';

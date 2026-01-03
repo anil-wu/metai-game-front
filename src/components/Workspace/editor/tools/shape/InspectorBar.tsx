@@ -12,7 +12,7 @@ import TextRectangleInspectorBar from '../text-rectangle/InspectorBar';
 import TextCircleInspectorBar from '../text-circle/InspectorBar';
 
 interface ShapeInspectorBarProps {
-  element: BaseElement;
+  element: BaseElement<any>;
   onUpdate: (updates: Partial<any>) => void;
   onDownload?: () => void;
 }

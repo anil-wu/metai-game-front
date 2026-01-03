@@ -1,10 +1,10 @@
 import Konva from 'konva';
 import { BaseMouseAction } from '../base/BaseMouseAction';
-import { ToolContext } from '../interfaces/Tool';
+import { ToolContext } from '../../interfaces/IMouseAction';
 import { ToolType } from '../../../types/ToolType';
 import { useWorkspaceStore } from '@/store/useWorkspaceStore';
 
-export class SelectionMouseAction extends BaseMouseAction {
+export class MouseAction extends BaseMouseAction {
   type: ToolType = 'select';
 
   onMouseDown(e: Konva.KonvaEventObject<MouseEvent>, context: ToolContext): void {

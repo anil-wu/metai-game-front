@@ -1,309 +1,187 @@
 import { ToolType } from './ToolType';
+import { 
+  ElementState, 
+  BaseElementState, 
+  ShapeState, 
+  TextState, 
+  TextShapeState, 
+  ImageState, 
+  DrawState 
+} from './ElementState';
 
-export interface IElementState {
-  id: string;
-  type: ToolType;
-  name: string;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  rotation: number;
-  visible: boolean;
-  locked: boolean;
-  color?: string;
-  src?: string; // For images
-  text?: string; // For text and shape-text
-  fontSize?: number; // For text
-  fontFamily?: string; // For text
-  textColor?: string; // For text
-  textStroke?: string; // For text outline
-  textStrokeWidth?: number; // For text outline width
-  stroke?: string;
-  strokeWidth?: number;
-  strokeStyle?: 'solid' | 'dashed' | 'dotted';
-  cornerRadius?: number;
-  sides?: number; // For polygon sides
-  starInnerRadius?: number; // For star inner radius percentage (0-100)
-  isEditing?: boolean; // UI state for text editing
-  fontStyle?: string; // normal, bold, italic, italic bold
-  align?: string; // left, center, right
-  lineHeight?: number;
-  letterSpacing?: number;
-  textDecoration?: string; // underline, line-through
-  textTransform?: string; // uppercase, lowercase
-  points?: number[]; // For pencil and pen tools
-  fill?: string; // For pencil and pen tools
-}
+export type { ElementState, BaseElementState };
+export type IElementState = ElementState;
 
-export abstract class BaseElement {
-  id: string;
-  type: ToolType;
-  name: string;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  rotation: number;
-  visible: boolean;
-  locked: boolean;
-  isEditing?: boolean;
-  fontStyle?: string;
-  align?: string;
-  lineHeight?: number;
-  letterSpacing?: number;
-  textDecoration?: string;
-  textTransform?: string;
+export abstract class BaseElement<T extends BaseElementState = BaseElementState> {
+  protected readonly state: T;
 
-  constructor(state: IElementState) {
-    this.id = state.id;
-    this.type = state.type;
-    this.name = state.name;
-    this.x = state.x;
-    this.y = state.y;
-    this.width = state.width;
-    this.height = state.height;
-    this.rotation = state.rotation;
-    this.visible = state.visible;
-    this.locked = state.locked;
-    this.isEditing = state.isEditing;
-    this.fontStyle = state.fontStyle;
-    this.align = state.align;
-    this.lineHeight = state.lineHeight;
-    this.letterSpacing = state.letterSpacing;
-    this.textDecoration = state.textDecoration;
-    this.textTransform = state.textTransform;
+  constructor(state: T) {
+    this.state = { ...state };
   }
 
-  // 返回一个新的实例以保持不可变性
-  abstract clone(): BaseElement;
-  
-  update(props: Partial<IElementState>): BaseElement {
-    const newState = { ...this.toState(), ...props };
-    // Use the constructor of the current instance to create a new one
-    // This avoids dependency on ElementFactory and circular dependencies
-    const Constructor = this.constructor as new (state: IElementState) => BaseElement;
+  // === 基础属性 ===
+  get id() { return this.state.id; }
+  get type() { return this.state.type; }
+  get name() { return this.state.name; }
+  get x() { return this.state.x; }
+  get y() { return this.state.y; }
+  get width() { return this.state.width; }
+  get height() { return this.state.height; }
+  get rotation() { return this.state.rotation; }
+  get visible() { return this.state.visible; }
+  get locked() { return this.state.locked; }
+  get isEditing() { return this.state.isEditing; }
+
+  toState(): T {
+    return { ...this.state };
+  }
+
+  abstract clone(): BaseElement<T>;
+
+  update(props: Partial<T>): BaseElement<T> {
+    const newState = { ...this.state, ...props };
+    const Constructor = this.constructor as new (state: T) => BaseElement<T>;
     return new Constructor(newState);
   }
-
-  toState(): IElementState {
-    return {
-      id: this.id,
-      type: this.type,
-      name: this.name,
-      x: this.x,
-      y: this.y,
-      width: this.width,
-      height: this.height,
-      rotation: this.rotation,
-      visible: this.visible,
-      locked: this.locked,
-      isEditing: this.isEditing,
-      fontStyle: this.fontStyle,
-      align: this.align,
-      lineHeight: this.lineHeight,
-      letterSpacing: this.letterSpacing,
-      textDecoration: this.textDecoration,
-      textTransform: this.textTransform,
-      points: (this as any).points,
-    };
-  }
 }
 
-export class DrawElement extends BaseElement {
-  points: number[];
-  stroke: string;
-  strokeWidth: number;
-  fill?: string;
-  
-  constructor(state: IElementState) {
+export class ShapeElement extends BaseElement<ShapeState> {
+  get color() { return this.state.color; }
+  get stroke() { return this.state.stroke; }
+  get strokeWidth() { return this.state.strokeWidth; }
+  get strokeStyle() { return this.state.strokeStyle; }
+  get cornerRadius() { return this.state.cornerRadius; }
+  get sides() { return this.state.sides; }
+  get starInnerRadius() { return this.state.starInnerRadius; }
+
+  constructor(state: ShapeState) {
     super(state);
-    this.points = state.points || [];
-    this.stroke = state.stroke || '#000000';
-    this.strokeWidth = state.strokeWidth || 2;
-    this.fill = state.fill;
-  }
-
-  clone(): DrawElement {
-    return new DrawElement(this.toState());
-  }
-
-  toState(): IElementState {
-    return {
-      ...super.toState(),
-      points: this.points,
-      stroke: this.stroke,
-      strokeWidth: this.strokeWidth,
-      fill: this.fill,
-    };
-  }
-}
-
-export class ShapeElement extends BaseElement {
-  color: string;
-  stroke?: string;
-  strokeWidth?: number;
-  strokeStyle?: 'solid' | 'dashed' | 'dotted';
-  cornerRadius?: number;
-  sides?: number;
-  starInnerRadius?: number;
-
-  constructor(state: IElementState) {
-    super(state);
-    this.color = state.color || '#3b82f6';
-    this.stroke = state.stroke;
-    this.strokeWidth = state.strokeWidth;
-    this.strokeStyle = state.strokeStyle;
-    this.cornerRadius = state.cornerRadius;
-    this.sides = state.sides;
-    this.starInnerRadius = state.starInnerRadius;
   }
 
   clone(): ShapeElement {
     return new ShapeElement(this.toState());
   }
-
-  toState(): IElementState {
-    return {
-      ...super.toState(),
-      color: this.color,
-      stroke: this.stroke,
-      strokeWidth: this.strokeWidth,
-      strokeStyle: this.strokeStyle,
-      cornerRadius: this.cornerRadius,
-      sides: this.sides,
-      starInnerRadius: this.starInnerRadius,
-    };
-  }
 }
 
-export class ImageElement extends BaseElement {
-  src: string;
+export class TextElement extends BaseElement<TextState> {
+  get text() { return this.state.text; }
+  get fontSize() { return this.state.fontSize; }
+  get fontFamily() { return this.state.fontFamily; }
+  get textColor() { return this.state.textColor; }
+  get fontStyle() { return this.state.fontStyle; }
+  get align() { return this.state.align; }
+  get lineHeight() { return this.state.lineHeight; }
+  get letterSpacing() { return this.state.letterSpacing; }
+  get textDecoration() { return this.state.textDecoration; }
+  get textTransform() { return this.state.textTransform; }
 
-  constructor(state: IElementState) {
+  constructor(state: TextState) {
     super(state);
-    this.src = state.src || '';
-  }
-
-  clone(): ImageElement {
-    return new ImageElement(this.toState());
-  }
-
-  toState(): IElementState {
-    return {
-      ...super.toState(),
-      src: this.src,
-    };
-  }
-}
-
-export class TextElement extends BaseElement {
-  text: string;
-  fontSize: number;
-  fontFamily: string;
-  textColor: string;
-
-  constructor(state: IElementState) {
-    super(state);
-    this.text = state.text !== undefined ? state.text : 'Double click to edit';
-    this.fontSize = state.fontSize || 20;
-    this.fontFamily = state.fontFamily || 'Arial';
-    this.textColor = state.textColor || '#000000';
   }
 
   clone(): TextElement {
     return new TextElement(this.toState());
   }
-
-  toState(): IElementState {
-    return {
-      ...super.toState(),
-      text: this.text,
-      fontSize: this.fontSize,
-      fontFamily: this.fontFamily,
-      textColor: this.textColor,
-    };
-  }
 }
 
-export class TextShapeElement extends ShapeElement {
-  text: string;
-  fontSize: number;
-  fontFamily: string;
-  textColor: string;
-  textStroke?: string;
-  textStrokeWidth?: number;
+export class TextShapeElement extends BaseElement<TextShapeState> {
+  // Shape Props
+  get color() { return this.state.color; }
+  get stroke() { return this.state.stroke; }
+  get strokeWidth() { return this.state.strokeWidth; }
+  get strokeStyle() { return this.state.strokeStyle; }
+  get cornerRadius() { return this.state.cornerRadius; }
+  
+  // Text Props
+  get text() { return this.state.text; }
+  get fontSize() { return this.state.fontSize; }
+  get fontFamily() { return this.state.fontFamily; }
+  get textColor() { return this.state.textColor; }
+  get textStroke() { return this.state.textStroke; }
+  get textStrokeWidth() { return this.state.textStrokeWidth; }
+  get fontStyle() { return this.state.fontStyle; }
+  get align() { return this.state.align; }
+  get lineHeight() { return this.state.lineHeight; }
+  get letterSpacing() { return this.state.letterSpacing; }
+  get textDecoration() { return this.state.textDecoration; }
+  get textTransform() { return this.state.textTransform; }
 
-  constructor(state: IElementState) {
+  constructor(state: TextShapeState) {
     super(state);
-    this.text = state.text !== undefined ? state.text : 'Text';
-    this.fontSize = state.fontSize || 14;
-    this.fontFamily = state.fontFamily || 'Arial';
-    this.textColor = state.textColor || '#ffffff';
-    this.textStroke = state.textStroke;
-    this.textStrokeWidth = state.textStrokeWidth;
-    this.fontStyle = state.fontStyle || 'normal';
-    this.align = state.align || 'center';
-    this.lineHeight = state.lineHeight || 1.2;
-    this.letterSpacing = state.letterSpacing || 0;
-    this.textDecoration = state.textDecoration || '';
-    this.textTransform = state.textTransform || '';
   }
 
-  update(props: Partial<IElementState>): TextShapeElement {
+  update(props: Partial<TextShapeState>): TextShapeElement {
     const updates = { ...props };
-    
-    // Auto-scale font size if height changes
     if (updates.height && this.height) {
        const scaleY = updates.height / this.height;
        if (scaleY > 0 && Math.abs(scaleY - 1) > 0.001) {
-         updates.fontSize = Math.max(5, Math.round(this.fontSize * scaleY));
+         updates.fontSize = Math.max(5, Math.round(this.state.fontSize * scaleY));
        }
     }
-
     return super.update(updates) as TextShapeElement;
   }
 
   clone(): TextShapeElement {
     return new TextShapeElement(this.toState());
   }
+}
 
-  toState(): IElementState {
-    return {
-      ...super.toState(),
-      text: this.text,
-      fontSize: this.fontSize,
-      fontFamily: this.fontFamily,
-      textColor: this.textColor,
-      textStroke: this.textStroke,
-      textStrokeWidth: this.textStrokeWidth,
-      fontStyle: this.fontStyle,
-      align: this.align,
-      lineHeight: this.lineHeight,
-      letterSpacing: this.letterSpacing,
-      textDecoration: this.textDecoration,
-      textTransform: this.textTransform,
-    };
+export class ImageElement extends BaseElement<ImageState> {
+  get src() { return this.state.src; }
+
+  constructor(state: ImageState) {
+    super(state);
+  }
+
+  clone(): ImageElement {
+    return new ImageElement(this.toState());
+  }
+}
+
+export class DrawElement extends BaseElement<DrawState> {
+  get points() { return this.state.points; }
+  get stroke() { return this.state.stroke; }
+  get strokeWidth() { return this.state.strokeWidth; }
+  get fill() { return this.state.fill; }
+
+  constructor(state: DrawState) {
+    super(state);
+  }
+
+  clone(): DrawElement {
+    return new DrawElement(this.toState());
   }
 }
 
 export class ElementFactory {
-  static create(state: IElementState): BaseElement {
-    if (state.type === 'image') {
-      return new ImageElement(state);
-    } else if (state.type === 'text') {
-      return new TextElement(state);
-    } else if (['chat-bubble', 'arrow-left', 'arrow-right', 'rectangle-text', 'circle-text'].includes(state.type)) {
-       return new TextShapeElement(state);
-    } else if (['pencil', 'pen'].includes(state.type)) {
-      return new DrawElement(state);
+  static create(state: ElementState): BaseElement<any> {
+    switch (state.type) {
+      case 'image':
+        return new ImageElement(state as ImageState);
+      case 'text':
+        return new TextElement(state as TextState);
+      case 'pencil':
+      case 'pen':
+        return new DrawElement(state as DrawState);
+      case 'chat-bubble':
+      case 'arrow-left':
+      case 'arrow-right':
+      case 'rectangle-text':
+      case 'circle-text':
+        return new TextShapeElement(state as TextShapeState);
+      case 'rectangle':
+      case 'circle':
+      case 'triangle':
+      case 'star':
+        return new ShapeElement(state as ShapeState);
+      default:
+        throw new Error(`Unknown element type: ${(state as any).type}`);
     }
-    return new ShapeElement(state);
   }
 
-  static createDefault(type: ToolType, x: number, y: number, id?: string): BaseElement {
+  static createDefault(type: ToolType, x: number, y: number, id?: string): BaseElement<any> {
     const finalId = id || Date.now().toString();
-    const baseState: IElementState = {
+    const baseState: BaseElementState = {
       id: finalId,
       type,
       name: `${type} ${finalId.slice(-4)}`,
@@ -317,30 +195,44 @@ export class ElementFactory {
     };
 
     if (type === 'image') {
-       return new ImageElement({ ...baseState, src: '/role.png', width: 200, height: 300 });
+       return new ImageElement({ 
+         ...baseState, 
+         type: 'image',
+         src: '/role.png', 
+         width: 200, 
+         height: 300 
+       });
     }
     
     if (type === 'text') {
       return new TextElement({
         ...baseState,
+        type: 'text',
         width: 200,
         height: 50,
-        text: 'Hello World'
+        text: 'Hello World',
+        fontSize: 20,
+        fontFamily: 'Arial',
+        textColor: '#000000'
       });
     }
 
     if (['chat-bubble', 'arrow-left', 'arrow-right', 'rectangle-text', 'circle-text'].includes(type)) {
        return new TextShapeElement({
          ...baseState,
+         type: type as TextShapeState['type'],
          color: '#8b5cf6',
          text: 'Label',
-         textColor: '#ffffff'
+         textColor: '#ffffff',
+         fontSize: 14,
+         fontFamily: 'Arial'
        });
     }
 
     if (['pencil', 'pen'].includes(type)) {
       return new DrawElement({
         ...baseState,
+        type: type as DrawState['type'],
         width: 0,
         height: 0,
         points: [],
@@ -349,12 +241,17 @@ export class ElementFactory {
       });
     }
 
-    // 根据类型分配默认颜色
     let color = '#3b82f6';
     if (type === 'circle') color = '#ef4444';
     if (type === 'triangle') color = '#10b981';
     if (type === 'star') color = '#f59e0b';
 
-    return new ShapeElement({ ...baseState, color, sides: type === 'star' ? 5 : (type === 'triangle' ? 3 : undefined), starInnerRadius: type === 'star' ? 50 : undefined });
+    return new ShapeElement({ 
+      ...baseState, 
+      type: type as ShapeState['type'],
+      color, 
+      sides: type === 'star' ? 5 : (type === 'triangle' ? 3 : undefined), 
+      starInnerRadius: type === 'star' ? 50 : undefined 
+    });
   }
 }

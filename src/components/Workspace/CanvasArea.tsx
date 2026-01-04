@@ -50,6 +50,22 @@ export default function CanvasArea({
       return;
     }
 
+    const isMod = e.ctrlKey || e.metaKey;
+    if (isMod && e.key.toLowerCase() === 'z') {
+      e.preventDefault();
+      if (e.shiftKey) {
+        useWorkspaceStore.temporal.getState().redo();
+      } else {
+        useWorkspaceStore.temporal.getState().undo();
+      }
+      return;
+    }
+    if (isMod && e.key.toLowerCase() === 'y') {
+      e.preventDefault();
+      useWorkspaceStore.temporal.getState().redo();
+      return;
+    }
+
     switch (e.key.toLowerCase()) {
       case 'v':
         setActiveTool('select');

@@ -36,6 +36,8 @@ export interface TextState extends BaseElementState {
   fontSize: number;
   fontFamily: string;
   textColor: string;
+  textStroke?: string;
+  textStrokeWidth?: number;
   fontStyle?: string;
   align?: string;
   lineHeight?: number;
@@ -82,6 +84,7 @@ export interface DrawState extends BaseElementState {
   stroke: string;
   strokeWidth: number;
   fill?: string;
+  tension?: number;
 }
 
 // === 联合类型 (The Discriminated Union) ===

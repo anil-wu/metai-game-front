@@ -50,6 +50,9 @@ export default function TextShapeElement(props: TextShapeElementProps & { childr
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     e.stopPropagation(); 
+    if (e.key === 'Escape') {
+      updateElement(id, { isEditing: false });
+    }
   };
 
   const getCssStyles = (fontStyle: string) => {
@@ -124,6 +127,8 @@ export default function TextShapeElement(props: TextShapeElementProps & { childr
               onChange={handleChange}
               onBlur={handleBlur}
               onKeyDown={handleKeyDown}
+              onMouseDown={(e) => e.stopPropagation()}
+              onClick={(e) => e.stopPropagation()}
               style={{
                 width: width,
                 height: height,

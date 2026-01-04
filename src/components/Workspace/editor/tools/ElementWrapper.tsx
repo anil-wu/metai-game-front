@@ -24,6 +24,7 @@ export const ElementWrapper: React.FC<BaseElementProps & { children?: React.Reac
   height,
   rotation,
   isSelected,
+  isEditing,
   draggable = true,
   children
 }) => {
@@ -66,7 +67,7 @@ export const ElementWrapper: React.FC<BaseElementProps & { children?: React.Reac
       onTap={handleSelect}
       onDblClick={handleDblClick}
       onDblTap={handleDblClick}
-      draggable={draggable && activeTool === 'select'}
+      draggable={draggable && activeTool === 'select' && !isEditing}
       onDragEnd={handleDragEnd}
       onTransformEnd={(e) => {
         // This is usually handled by the Transformer attached to the node, 

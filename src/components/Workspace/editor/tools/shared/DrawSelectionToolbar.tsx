@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Download, Spline, Slash } from 'lucide-react';
-import { BaseElement } from '../../../../types/BaseElement';
+import { BaseElement } from '../../../types/BaseElement';
 import { StrokePanel } from '../shared/StrokePanel';
 
 interface DrawSelectionToolbarProps {

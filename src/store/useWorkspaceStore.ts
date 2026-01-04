@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { temporal, TemporalState } from 'zundo';
 import { BaseElement, ElementFactory } from '../components/workspace/types/BaseElement';
 import { ToolType } from '../components/workspace/types/ToolType';
+import { ElementState } from '../components/workspace/types/ElementState';
 
 interface WorkspaceState {
   elements: BaseElement<any>[];
@@ -13,7 +14,7 @@ interface WorkspaceState {
   selectElement: (id: string | null) => void;
   setActiveTool: (tool: ToolType) => void;
   addElement: (element: BaseElement<any>) => void;
-  updateElement: (id: string, updates: Partial<any>) => void;
+  updateElement: (id: string, updates: Partial<ElementState>) => void;
   removeElement: (id: string) => void;
 }
 

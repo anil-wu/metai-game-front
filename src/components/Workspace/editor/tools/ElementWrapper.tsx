@@ -23,6 +23,7 @@ export const ElementWrapper: React.FC<BaseElementProps & { children?: React.Reac
   width, // Passed for reference, but children often handle their own sizing visually
   height,
   rotation,
+  locked,
   isSelected,
   isEditing,
   draggable = true,
@@ -33,13 +34,14 @@ export const ElementWrapper: React.FC<BaseElementProps & { children?: React.Reac
   const { activeTool, selectElement, updateElement } = useWorkspaceStore();
 
   const handleSelect = (e: Konva.KonvaEventObject<MouseEvent>) => {
-    if (activeTool === 'select') {
+    if (activeTool === 'select' && !locked) {
       selectElement(id);
       e.cancelBubble = true;
     }
   };
 
   const handleDragEnd = (e: Konva.KonvaEventObject<DragEvent>) => {
+    if (locked) return;
     updateElement(id, {
       x: e.target.x(),
       y: e.target.y(),
@@ -48,6 +50,7 @@ export const ElementWrapper: React.FC<BaseElementProps & { children?: React.Reac
   };
 
   const handleDblClick = (e: Konva.KonvaEventObject<MouseEvent>) => {
+    if (locked) return;
     const textEditableTypes: ToolType[] = ['text', 'chat-bubble', 'arrow-left', 'arrow-right', 'rectangle-text', 'circle-text'];
     if (type && textEditableTypes.includes(type)) {
       updateElement(id, { isEditing: true });
@@ -68,7 +71,7 @@ export const ElementWrapper: React.FC<BaseElementProps & { children?: React.Reac
       onTap={handleSelect}
       onDblClick={handleDblClick}
       onDblTap={handleDblClick}
-      draggable={draggable && activeTool === 'select' && !isEditing}
+      draggable={draggable && activeTool === 'select' && !isEditing && !locked}
       onDragEnd={handleDragEnd}
       onTransformEnd={(e) => {
         // This is usually handled by the Transformer attached to the node, 

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { ChevronRight, Eye, Lock, ChevronUp, ChevronDown, Minimize2, Image as ImageIcon, Layers } from 'lucide-react';
+import { ChevronRight, Eye, EyeOff, Lock, Unlock, ChevronUp, ChevronDown, Minimize2, Image as ImageIcon, Layers } from 'lucide-react';
 import { BaseElement } from '../types/BaseElement';
 import { useWorkspaceStore } from '@/store/useWorkspaceStore';
 
@@ -15,6 +15,7 @@ export default function HierarchyPanel({ isCollapsed, toggleSidebar }: Hierarchy
   const elements = store?.elements || [];
   const selectedId = store?.selectedId || null;
   const selectElement = store?.selectElement || (() => {});
+  const updateElement = store?.updateElement || (() => {});
   
   const [isHistoryOpen, setIsHistoryOpen] = useState(true);
 
@@ -75,6 +76,17 @@ export default function HierarchyPanel({ isCollapsed, toggleSidebar }: Hierarchy
             element={el}
             active={selectedId === el.id} 
             onClick={() => selectElement(el.id)}
+            onToggleVisible={(e) => {
+              e.stopPropagation();
+              updateElement(el.id, { visible: !el.visible });
+            }}
+            onToggleLock={(e) => {
+              e.stopPropagation();
+              if (!el.locked && selectedId === el.id) {
+                selectElement(null);
+              }
+              updateElement(el.id, { locked: !el.locked });
+            }}
           />
         ))}
         {elements.length === 0 && (
@@ -95,7 +107,19 @@ export default function HierarchyPanel({ isCollapsed, toggleSidebar }: Hierarchy
   );
 }
 
-function LayerItem({ element, active, onClick }: { element: BaseElement<any>, active: boolean, onClick: () => void }) {
+function LayerItem({ 
+  element, 
+  active, 
+  onClick,
+  onToggleVisible,
+  onToggleLock
+}: { 
+  element: BaseElement<any>, 
+  active: boolean, 
+  onClick: () => void,
+  onToggleVisible: (e: React.MouseEvent) => void,
+  onToggleLock: (e: React.MouseEvent) => void
+}) {
   // Determine icon/image based on type
   const isImage = element.type === 'image';
   const imageUrl = isImage ? (element as any).src : null;
@@ -125,12 +149,24 @@ function LayerItem({ element, active, onClick }: { element: BaseElement<any>, ac
         <div className="text-xs text-gray-400">{element.type}</div>
       </div>
 
-      <div className="flex items-center gap-1.5">
-        <div className={`text-gray-400 ${(!element.locked && !active) && 'opacity-0 group-hover:opacity-100'} hover:text-gray-600`}>
-          <Lock size={14} />
+      <div className="flex items-center gap-1">
+        <div 
+          onClick={onToggleLock}
+          className={`p-1 rounded-md hover:bg-gray-200 text-gray-400 transition-colors
+            ${element.locked ? 'text-orange-500 opacity-100' : 'opacity-0 group-hover:opacity-100'}
+          `}
+          title={element.locked ? "解锁" : "锁定"}
+        >
+          {element.locked ? <Lock size={14} /> : <Unlock size={14} />}
         </div>
-        <div className={`text-gray-400 ${(!element.visible && !active) && 'opacity-0 group-hover:opacity-100'} hover:text-gray-600`}>
-          <Eye size={14} />
+        <div 
+          onClick={onToggleVisible}
+          className={`p-1 rounded-md hover:bg-gray-200 text-gray-400 transition-colors
+            ${!element.visible ? 'text-gray-500 opacity-100' : 'opacity-0 group-hover:opacity-100'}
+          `}
+          title={element.visible ? "隐藏" : "显示"}
+        >
+          {element.visible ? <Eye size={14} /> : <EyeOff size={14} />}
         </div>
       </div>
     </div>

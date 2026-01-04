@@ -105,6 +105,12 @@ export default function EditorStage({
   // Handle selection transformer
   useEffect(() => {
     if (selectedId && transformerRef.current && stageRef.current && !isDrawing) {
+      const selectedElement = elements.find(el => el.id === selectedId);
+      if (selectedElement?.locked) {
+        transformerRef.current.nodes([]);
+        return;
+      }
+
       const selectedNode = stageRef.current.findOne('#' + selectedId);
       if (selectedNode) {
         transformerRef.current.nodes([selectedNode]);

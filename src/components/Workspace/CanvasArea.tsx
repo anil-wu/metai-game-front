@@ -198,15 +198,16 @@ export default function CanvasArea({
         const isImage = selectedElement.type === 'image';
         const isShape = ['rectangle', 'triangle', 'star', 'circle', 'chat-bubble', 'arrow-left', 'arrow-right', 'rectangle-text', 'circle-text'].includes(selectedElement.type);
         const isDraw = ['pencil', 'pen'].includes(selectedElement.type);
+        const isText = selectedElement.type === 'text';
 
         // If current tool is pencil/pen, we use the top persistent toolbar, so don't show floating one for draw elements
         if (isDraw && ['pencil', 'pen'].includes(activeTool)) return null;
 
-        if (!isImage && !isShape && !isDraw) return null;
+        if (!isImage && !isShape && !isDraw && !isText) return null;
 
-        const isTextLike = selectedElement.type === 'text' || ['chat-bubble', 'arrow-left', 'arrow-right', 'rectangle-text', 'circle-text'].includes(selectedElement.type);
+        const isTextLike = isText || ['chat-bubble', 'arrow-left', 'arrow-right', 'rectangle-text', 'circle-text'].includes(selectedElement.type);
 
-        if (selectedElement.isEditing && isTextLike) {
+        if (isText || (selectedElement.isEditing && isTextLike)) {
           return (
             <div 
               className="absolute z-50 pointer-events-none transition-all duration-75 ease-out"

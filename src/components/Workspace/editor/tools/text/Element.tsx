@@ -73,7 +73,7 @@ export default function TextElement(props: TextElementProps) {
          width={width}
          height={height}
          visible={!isEditing}
-         listening={false}
+         // listening={false}
        />
        {isEditing && (
          <Html>

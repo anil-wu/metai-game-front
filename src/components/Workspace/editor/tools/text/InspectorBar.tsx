@@ -1,10 +1,11 @@
 "use client";
 
 import React, { useState, useRef } from 'react';
-import { AlignLeft, AlignCenter, AlignRight, Download, ChevronDown, SlidersHorizontal, Pencil } from 'lucide-react';
+import { AlignLeft, AlignCenter, AlignRight, Download, ChevronDown, SlidersHorizontal, Pencil, Trash2 } from 'lucide-react';
 import { BaseElement } from '../../../types/BaseElement';
 import { StrokePanel } from '../shared/StrokePanel';
 import { TextAdvancedPanel } from './AdvancedPanel';
+import { useWorkspaceStore } from '@/store/useWorkspaceStore';
 
 interface TextInspectorBarProps {
   element: BaseElement<any>;
@@ -25,6 +26,7 @@ const FONT_WEIGHTS = [
 ];
 
 export default function TextInspectorBar({ element, onUpdate, onDownload }: TextInspectorBarProps) {
+  const { removeElement } = useWorkspaceStore();
   const [showStrokePanel, setShowStrokePanel] = useState(false);
   const [showAdvancedPanel, setShowAdvancedPanel] = useState(false);
   const strokeButtonRef = useRef<HTMLButtonElement>(null);

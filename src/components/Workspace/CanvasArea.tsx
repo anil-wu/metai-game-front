@@ -11,6 +11,7 @@ import DrawSelectionToolbar from './editor/tools/shared/DrawSelectionToolbar';
 import TextInspectorBar from './editor/tools/text/InspectorBar';
 import { ZoomIn, ZoomOut } from 'lucide-react';
 import { useWorkspaceStore } from '@/store/useWorkspaceStore';
+import { ContextMenu } from './editor/ContextMenu';
 
 // Dynamically import EditorStage to avoid SSR issues with Konva
 const EditorStage = dynamic(() => import('./EditorStage'), { ssr: false });
@@ -29,6 +30,7 @@ export default function CanvasArea({
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const [stagePos, setStagePos] = useState({ x: 0, y: 0 });
   const [drawingStyle, setDrawingStyle] = useState({ stroke: '#000000', strokeWidth: 2 });
+  const [contextMenu, setContextMenu] = useState<{ x: number; y: number; elementId: string | null } | null>(null);
 
   useEffect(() => {
     const updateDimensions = () => {
@@ -63,6 +65,14 @@ export default function CanvasArea({
     if (isMod && e.key.toLowerCase() === 'y') {
       e.preventDefault();
       useWorkspaceStore.temporal.getState().redo();
+      return;
+    }
+
+    if (e.key === 'Delete' || e.key === 'Backspace') {
+      const { selectedId, removeElement } = useWorkspaceStore.getState();
+      if (selectedId) {
+        removeElement(selectedId);
+      }
       return;
     }
 
@@ -148,6 +158,24 @@ export default function CanvasArea({
           width={dimensions.width}
           height={dimensions.height}
           drawingStyle={drawingStyle}
+          onContextMenu={(e, elementId) => {
+            e.evt.preventDefault();
+            setContextMenu({
+              x: e.evt.clientX,
+              y: e.evt.clientY,
+              elementId: elementId || null
+            });
+          }}
+        />
+      )}
+
+      {/* Context Menu */}
+      {contextMenu && (
+        <ContextMenu
+          x={contextMenu.x}
+          y={contextMenu.y}
+          elementId={contextMenu.elementId}
+          onClose={() => setContextMenu(null)}
         />
       )}
 

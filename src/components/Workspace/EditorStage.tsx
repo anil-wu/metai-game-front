@@ -26,6 +26,7 @@ interface EditorStageProps {
   height: number;
   onToolChange?: (tool: ToolType) => void;
   drawingStyle?: { stroke: string; strokeWidth: number };
+  onContextMenu?: (e: Konva.KonvaEventObject<PointerEvent>, elementId?: string) => void;
 }
 
 export default function EditorStage({
@@ -38,6 +39,7 @@ export default function EditorStage({
   height,
   onToolChange,
   drawingStyle,
+  onContextMenu,
 }: EditorStageProps) {
   const { elements, selectedId } = useWorkspaceStore();
   const stageRef = useRef<Konva.Stage>(null);
@@ -140,6 +142,30 @@ export default function EditorStage({
       onMouseUp={onMouseUp}
       onTouchEnd={onMouseUp as any}
       onDblClick={onDblClick}
+      onContextMenu={(e) => {
+        // Prevent default browser menu
+        e.evt.preventDefault();
+        
+        // Find if we clicked on an element
+        // We look up the tree to find a node with an ID that matches an element
+        let target = e.target;
+        let elementId: string | undefined;
+
+        // Try to find the group id
+        while (target && target !== target.getStage()) {
+            if (target.id() && elements.some(el => el.id === target.id())) {
+                elementId = target.id();
+                break;
+            }
+            if (target.parent) {
+                target = target.parent;
+            } else {
+                break;
+            }
+        }
+
+        onContextMenu?.(e, elementId);
+      }}
       className="bg-[#fafafa]"
     >
       <Layer>
@@ -157,6 +183,9 @@ export default function EditorStage({
               {...el.toState()}
               isSelected={isSelected}
               isEditing={el.isEditing}
+              onContextMenu={(e: Konva.KonvaEventObject<PointerEvent>) => {
+                  onContextMenu?.(e, el.id);
+              }}
             />
           );
         })}

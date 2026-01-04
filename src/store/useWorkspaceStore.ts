@@ -57,6 +57,24 @@ export const useWorkspaceStore = create<WorkspaceState>()(
           elements: state.elements.filter((el) => el.id !== id),
           selectedId: state.selectedId === id ? null : state.selectedId
         })),
+
+        duplicateElement: (id) => set((state) => {
+          const element = state.elements.find((el) => el.id === id);
+          if (!element) return {};
+
+          const newId = Date.now().toString() + Math.random().toString(36).substr(2, 5);
+          const newElement = element.clone().update({
+            id: newId,
+            x: element.x + 20,
+            y: element.y + 20,
+            name: `${element.name} (Copy)`
+          } as any); // Type assertion needed because update expects Partial<T> but we are modifying ID which might be readonly in some contexts, though here it is in BaseElementState
+
+          return {
+            elements: [...state.elements, newElement],
+            selectedId: newId
+          };
+        }),
       };
     },
     {
